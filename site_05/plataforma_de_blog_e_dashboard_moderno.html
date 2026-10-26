@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseBlog & Tech Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Transições suaves */
+        * {
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 9999px;
+        }
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-accent-500 selection:text-white">
+
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ========================================== -->
+    <!-- PUBLIC LAYOUT HEADER (BLOG)               -->
+    <!-- ========================================== -->
+    <header id="public-header" class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <a href="#home" onclick="navigate('home')" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                </div>
+                <span class="font-heading font-bold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-600 dark:from-white dark:via-slate-200 dark:to-indigo-400 bg-clip-text text-transparent">
+                    Pulse<span class="text-accent-500">Tech</span>
+                </span>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-1 font-medium text-sm text-slate-600 dark:text-slate-300">
+                <a href="#home" onclick="navigate('home')" class="px-3 py-2 rounded-lg hover:text-accent-500 dark:hover:text-accent-400 hover:bg-slate-100 dark:hover:bg-slate-800/60">Home</a>
+                <a href="#blog" onclick="navigate('blog')" class="px-3 py-2 rounded-lg hover:text-accent-500 dark:hover:text-accent-400 hover:bg-slate-100 dark:hover:bg-slate-800/60">Blog</a>
+                <a href="#categorias" onclick="navigate('categorias')" class="px-3 py-2 rounded-lg hover:text-accent-500 dark:hover:text-accent-400 hover:bg-slate-100 dark:hover:bg-slate-800/60">Categorias</a>
+            </nav>
+
+            <!-- Search & User Actions -->
+            <div class="flex items-center gap-3">
+                <!-- Search Trigger -->
+                <div class="relative hidden sm:block">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" placeholder="Buscar posts..." oninput="handleSearch(this.value)" class="w-48 lg:w-64 pl-9 pr-4 py-1.5 text-sm rounded-full bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-accent-500 dark:focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500">
+                </div>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800" title="Alternar Tema">
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                </button>
+
+                <!-- Dashboard Link -->
+                <a href="#dash-home" onclick="navigate('dash-home')" class="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-500/10 text-accent-600 dark:text-accent-400 border border-indigo-500/20 hover:bg-indigo-500/20">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Painel Admin</span>
+                </a>
+
+                <!-- Auth Buttons -->
+                <div id="auth-buttons" class="flex items-center gap-2">
+                    <button onclick="navigate('login')" class="px-3.5 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-accent-500">Entrar</button>
+                    <button onclick="navigate('register')" class="px-3.5 py-1.5 text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 rounded-lg shadow-md shadow-accent-600/20">Cadastrar</button>
+                </div>
+
+                <!-- Mobile menu btn -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 dark:text-slate-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-2">
+            <a href="#home" onclick="navigate('home')" class="block py-2 text-slate-700 dark:text-slate-200">Home</a>
+            <a href="#blog" onclick="navigate('blog')" class="block py-2 text-slate-700 dark:text-slate-200">Blog</a>
+            <a href="#categorias" onclick="navigate('categorias')" class="block py-2 text-slate-700 dark:text-slate-200">Categorias</a>
+            <a href="#dash-home" onclick="navigate('dash-home')" class="block py-2 text-accent-500 font-semibold">Ir para Dashboard Admin</a>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- DASHBOARD SIDEBAR & HEADER WRAPPER        -->
+    <!-- ========================================== -->
+    <div id="dashboard-wrapper" class="hidden min-h-screen flex-1 flex flex-col lg:flex-row bg-slate-900 text-slate-100">
+        <!-- Sidebar -->
+        <aside class="w-full lg:w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0">
+            <div>
+                <!-- Dash Logo Header -->
+                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+                    <a href="#home" onclick="navigate('home')" class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-accent-600 flex items-center justify-center text-white">
+                            <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+                        </div>
+                        <span class="font-heading font-bold text-lg text-white">Pulse<span class="text-accent-500">Dash</span></span>
+                    </a>
+                    <button onclick="navigate('home')" class="text-slate-400 hover:text-white lg:hidden">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Nav items -->
+                <nav class="p-4 space-y-1">
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Visão Geral</div>
+                    <button onclick="navigate('dash-home')" id="nav-dash-home" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                    </button>
+                    <button onclick="navigate('dash-registros')" id="nav-dash-registros" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Posts & Conteúdo
+                    </button>
+                    <button onclick="navigate('dash-visitantes')" id="nav-dash-visitantes" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i data-lucide="users" class="w-4 h-4"></i> Visitantes & Analytics
+                    </button>
+                    <button onclick="navigate('dash-settings')" id="nav-dash-settings" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i data-lucide="settings" class="w-4 h-4"></i> Configurações
+                    </button>
+
+                    <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mt-6 mb-2">Ações Rápidas</div>
+                    <button onclick="navigate('form-edicao')" id="nav-form-edicao" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-accent-500"></i> Criar Novo Post
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-slate-800">
+                <button onclick="navigate('home')" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao Blog
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard View Container -->
+        <main class="flex-1 bg-slate-900 text-slate-100 overflow-y-auto min-h-screen">
+            <!-- Top Header -->
+            <header class="h-16 border-b border-slate-800 px-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <h2 id="dash-page-title" class="font-heading font-bold text-xl text-white">Dashboard</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                    </button>
+                    <div class="flex items-center gap-3 border-l border-slate-800 pl-4">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Admin" class="w-8 h-8 rounded-full object-cover ring-2 ring-accent-500/50">
+                        <div class="hidden sm:block">
+                            <div class="text-xs font-semibold text-white">Elena Rostova</div>
+                            <div class="text-[10px] text-slate-400">Editor Chefe</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <!-- DASHBOARD VIEWS GO HERE -->
+
+                <!-- 8. DASHBOARD HOME -->
+                <section id="view-dash-home" class="view-section space-y-6">
+                    <!-- Metrics Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80">
+                            <div class="flex items-center justify-between text-slate-400 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider">Total de Posts</span>
+                                <i data-lucide="file-text" class="w-5 h-5 text-accent-500"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white font-heading" id="dash-stat-posts">24</div>
+                            <div class="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +12% este mês
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80">
+                            <div class="flex items-center justify-between text-slate-400 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider">Visualizações</span>
+                                <i data-lucide="eye" class="w-5 h-5 text-indigo-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white font-heading">142.850</div>
+                            <div class="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +28.4% esta semana
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80">
+                            <div class="flex items-center justify-between text-slate-400 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider">Inscritos Newsletter</span>
+                                <i data-lucide="users" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white font-heading">3.892</div>
+                            <div class="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +145 novos hoje
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80">
+                            <div class="flex items-center justify-between text-slate-400 mb-3">
+                                <span class="text-xs font-semibold uppercase tracking-wider">Taxa Engajamento</span>
+                                <i data-lucide="heart" class="w-5 h-5 text-rose-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white font-heading">8.4%</div>
+                            <div class="mt-2 text-xs text-rose-400 flex items-center gap-1">
+                                <i data-lucide="trending-down" class="w-3.5 h-3.5"></i> -0.2% vs ontem
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts & Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Simulated Chart -->
+                        <div class="lg:col-span-2 bg-slate-950 p-6 rounded-2xl border border-slate-800/80">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 class="font-heading font-semibold text-lg text-white">Acessos dos Últimos 7 Dias</h3>
+                                    <p class="text-xs text-slate-400">Visualizações de página por dia</p>
+                                </div>
+                                <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300">Tempo Real</span>
+                            </div>
+                            <!-- Bar Chart Visual simulation -->
+                            <div class="h-48 flex items-end justify-between gap-3 pt-4 border-b border-slate-800 px-2">
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[40%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">12k</span></div>
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[65%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">18k</span></div>
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[50%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">15k</span></div>
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[85%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">24k</span></div>
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[70%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">20k</span></div>
+                                <div class="w-full bg-slate-800 rounded-t hover:bg-accent-600 transition-colors h-[95%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-0 group-hover:opacity-100 text-white">29k</span></div>
+                                <div class="w-full bg-accent-600 rounded-t h-[75%] relative group"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] opacity-100 text-white font-bold">22k</span></div>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-500 mt-2 px-1">
+                                <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+                            </div>
+                        </div>
+
+                        <!-- Recent Comments Activity -->
+                        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80">
+                            <h3 class="font-heading font-semibold text-lg text-white mb-4">Comentários Recentes</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3 text-sm pb-3 border-b border-slate-900">
+                                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">CS</div>
+                                    <div>
+                                        <div class="text-xs text-slate-400"><strong class="text-white">Carlos Silva</strong> em <span class="text-indigo-400">Inteligência Artificial</span></div>
+                                        <p class="text-slate-300 text-xs mt-1 line-clamp-2">"Excelente reflexão sobre o impacto dos LLMs no mercado de trabalho."</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 text-sm pb-3 border-b border-slate-900">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">MA</div>
+                                    <div>
+                                        <div class="text-xs text-slate-400"><strong class="text-white">Mariana Alves</strong> em <span class="text-indigo-400">Web3 e a Web</span></div>
+                                        <p class="text-slate-300 text-xs mt-1 line-clamp-2">"Faltou mencionar as taxas de gás do Ethereum nessa comparação..."</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 text-sm">
+                                    <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs">PR</div>
+                                    <div>
+                                        <div class="text-xs text-slate-400"><strong class="text-white">Pedro Ramos</strong> em <span class="text-indigo-400">React 19</span></div>
+                                        <p class="text-slate-300 text-xs mt-1 line-clamp-2">"Os Server Actions realmente facilitaram a estrutura dos projetos."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 9. DASHBOARD REGISTROS / POSTS -->
+                <section id="view-dash-registros" class="view-section space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="font-heading font-bold text-xl text-white">Gerenciar Publicações</h3>
+                            <p class="text-xs text-slate-400">Crie, edite ou remova artigos do seu blog.</p>
+                        </div>
+                        <button onclick="navigate('form-edicao')" class="flex items-center gap-2 px-4 py-2 bg-accent-600 hover:bg-accent-700 text-white rounded-xl text-sm font-semibold shadow-lg shadow-accent-600/20">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Novo Post
+                        </button>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="bg-slate-950 rounded-2xl border border-slate-800/80 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-300">
+                                <thead class="bg-slate-900/60 text-xs uppercase text-slate-400 border-b border-slate-800">
+                                    <tr>
+                                        <th class="px-6 py-4 font-semibold">Título do Post</th>
+                                        <th class="px-6 py-4 font-semibold">Categoria</th>
+                                        <th class="px-6 py-4 font-semibold">Status</th>
+                                        <th class="px-6 py-4 font-semibold">Visualizações</th>
+                                        <th class="px-6 py-4 font-semibold text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-posts-table-body" class="divide-y divide-slate-800/60">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 10. DASHBOARD VISITANTES / ANALYTICS -->
+                <section id="view-dash-visitantes" class="view-section space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80">
+                            <h4 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Origem do Tráfego</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span>Busca Orgânica (Google)</span><span class="font-bold">54%</span></div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-accent-500 w-[54%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span>Redes Sociais (X / LinkedIn)</span><span class="font-bold">28%</span></div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 w-[28%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span>Acesso Direto</span><span class="font-bold">12%</span></div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 w-[12%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span>Outros Referrals</span><span class="font-bold">6%</span></div>
+                                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500 w-[6%]"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80">
+                            <h4 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Dispositivos</h4>
+                            <div class="flex items-center justify-around my-6">
+                                <div class="text-center">
+                                    <i data-lucide="monitor" class="w-8 h-8 text-indigo-400 mx-auto mb-2"></i>
+                                    <div class="text-xl font-bold">62%</div>
+                                    <div class="text-xs text-slate-400">Desktop</div>
+                                </div>
+                                <div class="text-center">
+                                    <i data-lucide="smartphone" class="w-8 h-8 text-accent-500 mx-auto mb-2"></i>
+                                    <div class="text-xl font-bold">35%</div>
+                                    <div class="text-xs text-slate-400">Mobile</div>
+                                </div>
+                                <div class="text-center">
+                                    <i data-lucide="tablet" class="w-8 h-8 text-emerald-400 mx-auto mb-2"></i>
+                                    <div class="text-xl font-bold">3%</div>
+                                    <div class="text-xs text-slate-400">Tablet</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80">
+                            <h4 class="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Top Países</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center justify-between"><span class="flex items-center gap-2">🇧🇷 Brasil</span><span class="font-bold text-slate-300">82.400</span></div>
+                                <div class="flex items-center justify-between"><span class="flex items-center gap-2">🇵🇹 Portugal</span><span class="font-bold text-slate-300">24.100</span></div>
+                                <div class="flex items-center justify-between"><span class="flex items-center gap-2">🇺🇸 Estados Unidos</span><span class="font-bold text-slate-300">14.800</span></div>
+                                <div class="flex items-center justify-between"><span class="flex items-center gap-2">🇦🇴 Angola</span><span class="font-bold text-slate-300">6.200</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 11. DASHBOARD SETTINGS -->
+                <section id="view-dash-settings" class="view-section max-w-4xl space-y-6">
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80 space-y-6">
+                        <h3 class="font-heading font-semibold text-lg text-white border-b border-slate-800 pb-3">Configurações Gerais do Blog</h3>
+
+                        <form onsubmit="saveSettings(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Nome do Blog</label>
+                                    <input type="text" id="setting-title" value="PulseTech" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">URL Principal</label>
+                                    <input type="text" value="https://pulsetech.io" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Descrição SEO / Meta Tag</label>
+                                <textarea rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">O seu portal definitivo sobre engenharia de software, inteligência artificial, tendências de tecnologia e carreira em tech.</textarea>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="check-comments" checked class="w-4 h-4 rounded bg-slate-900 border-slate-800 text-accent-600 focus:ring-accent-500">
+                                    <label for="check-comments" class="text-sm text-slate-300">Permitir novos comentários nos artigos</label>
+                                </div>
+                                <button type="submit" class="px-5 py-2.5 bg-accent-600 hover:bg-accent-700 text-white font-semibold text-sm rounded-xl shadow-lg shadow-accent-600/20">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 12. FORMULÁRIO DE EDIÇÃO / NOVO POST -->
+                <section id="view-form-edicao" class="view-section max-w-4xl space-y-6">
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800/80 space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                            <div>
+                                <h3 id="form-post-heading" class="font-heading font-bold text-xl text-white">Criar Novo Artigo</h3>
+                                <p class="text-xs text-slate-400">Preencha os dados e publique no seu blog.</p>
+                            </div>
+                            <span class="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-full font-medium">Editor Rich-Text</span>
+                        </div>
+
+                        <form onsubmit="handleSavePost(event)" class="space-y-4">
+                            <input type="hidden" id="edit-post-id" value="">
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Título do Post *</label>
+                                <input type="text" id="post-input-title" required placeholder="Ex: O Guia Completo sobre Next.js 15 e React Server Components" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Categoria *</label>
+                                    <select id="post-input-category" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                                        <option value="Programação">Programação</option>
+                                        <option value="Inteligência Artificial">Inteligência Artificial</option>
+                                        <option value="Design">Design</option>
+                                        <option value="Produtividade">Produtividade</option>
+                                        <option value="Carreira">Carreira</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">URL da Imagem de Capa</label>
+                                    <input type="url" id="post-input-image" placeholder="https://images.unsplash.com/photo-..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Resumo Breve *</label>
+                                <input type="text" id="post-input-summary" required placeholder="Resumo em uma frase para exibir nos cards da Home" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Conteúdo Completo (Markdown / HTML) *</label>
+                                <textarea id="post-input-content" required rows="10" placeholder="Escreva o conteúdo do post aqui..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-accent-500 focus:outline-none text-sm font-mono"></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                                <button type="button" onclick="navigate('dash-registros')" class="px-4 py-2.5 text-slate-400 hover:text-white text-sm font-medium">Cancelar</button>
+                                <button type="submit" class="px-6 py-2.5 bg-accent-600 hover:bg-accent-700 text-white font-semibold text-sm rounded-xl shadow-lg shadow-accent-600/20">
+                                    Publicar Artigo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PUBLIC PAGES CONTENT WRAPPER               -->
+    <!-- ========================================== -->
+    <main id="public-wrapper" class="flex-1">
+
+        <!-- 1. HOME VIEW -->
+        <section id="view-home" class="view-section active">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden py-16 md:py-24 bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div id="hero-featured-container">
+                        <!-- Hero Post Loaded Dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Bar -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-heading font-bold text-2xl">Explore por Categoria</h3>
+                    <a href="#categorias" onclick="navigate('categorias')" class="text-sm font-medium text-accent-600 dark:text-accent-400 hover:underline flex items-center gap-1">
+                        Ver todas <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="home-categories-grid">
+                    <!-- Dynamic categories -->
+                </div>
+            </div>
+
+            <!-- Recent Posts Grid -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <h3 class="font-heading font-bold text-2xl mb-8">Últimas Publicações</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="home-posts-grid">
+                    <!-- Dynamic post cards -->
+                </div>
+            </div>
+
+            <!-- Newsletter Box -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+                <div class="relative rounded-3xl p-8 md:p-12 overflow-hidden bg-gradient-to-r from-accent-600 to-indigo-700 text-white shadow-2xl">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="text-xs font-semibold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">Fique Atualizado</span>
+                        <h3 class="font-heading font-extrabold text-3xl md:text-4xl mt-4">Inscreva-se na nossa Newsletter Tech</h3>
+                        <p class="mt-2 text-indigo-100 text-sm md:text-base">Receba semanalmente uma curadoria dos melhores artigos de tecnologia, códigos de exemplo e análises de mercado diretamente na sua caixa de entrada.</p>
+                        
+                        <form onsubmit="handleSubscribe(event)" class="mt-6 flex flex-col sm:flex-row gap-3">
+                            <input type="email" required placeholder="Digite seu melhor e-mail..." class="px-5 py-3 rounded-xl bg-white/10 border border-white/20 placeholder-indigo-200 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white flex-1">
+                            <button type="submit" class="px-6 py-3 bg-white text-accent-700 font-bold rounded-xl hover:bg-indigo-50 text-sm transition-transform active:scale-95">Inscrever-se</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. CATEGORIAS VIEW -->
+        <section id="view-categorias" class="view-section py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div>
+                    <h2 class="font-heading font-extrabold text-3xl md:text-4xl">Categorias & Tópicos</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Filtre nosso acervo de conhecimento pelo seu assunto de interesse.</p>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-4" id="category-filter-buttons">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Filtered Posts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="category-filtered-posts">
+                    <!-- Dynamic cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. BLOG VIEW (LISTAGEM GERAL) -->
+        <section id="view-blog" class="view-section py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-heading font-extrabold text-3xl md:text-4xl">Todos os Artigos</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Navegue por todas as publicações do blog.</p>
+                    </div>
+
+                    <!-- Search Input for Blog Page -->
+                    <div class="relative w-full md:w-72">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="blog-search-input" oninput="handleSearch(this.value)" placeholder="Filtrar por título..." class="w-full pl-9 pr-4 py-2 text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-accent-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blog-posts-grid">
+                    <!-- Dynamic posts -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. POST COMPLETO VIEW -->
+        <section id="view-post" class="view-section py-12">
+            <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8" id="post-detail-container">
+                <!-- Single Post Content Loaded Dynamically -->
+            </article>
+        </section>
+
+        <!-- 5. LOGIN VIEW -->
+        <section id="view-login" class="view-section py-16">
+            <div class="max-w-md mx-auto px-4">
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+                    <div class="text-center">
+                        <h3 class="font-heading font-bold text-2xl">Bem-vindo de volta</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Acesse sua conta para interagir e gerenciar conteúdo.</p>
+                    </div>
+
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">E-mail</label>
+                            <input type="email" required value="admin@pulsetech.io" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-accent-500 focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Senha</label>
+                            <input type="password" required value="123456" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-accent-500 focus:outline-none text-sm">
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked class="rounded border-slate-300 text-accent-600"> Lembre-me
+                            </label>
+                            <a href="#" class="text-accent-500 hover:underline">Esqueceu a senha?</a>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-accent-600/20">
+                            Entrar na Conta
+                        </button>
+                    </form>
+
+                    <div class="relative flex py-2 items-center">
+                        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                        <span class="flex-shrink mx-4 text-xs text-slate-400">Ou acelere os testes</span>
+                        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                    </div>
+
+                    <button onclick="loginAsAdmin()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium rounded-xl text-xs flex items-center justify-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-accent-500"></i> Entrar Direto como Admin
+                    </button>
+
+                    <p class="text-center text-xs text-slate-500">
+                        Não tem conta? <a href="#register" onclick="navigate('register')" class="text-accent-500 font-semibold hover:underline">Cadastre-se</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. REGISTER VIEW -->
+        <section id="view-register" class="view-section py-16">
+            <div class="max-w-md mx-auto px-4">
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+                    <div class="text-center">
+                        <h3 class="font-heading font-bold text-2xl">Criar Nova Conta</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Junte-se à nossa comunidade de leitores e autores.</p>
+                    </div>
+
+                    <form onsubmit="handleRegister(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Nome Completo</label>
+                            <input type="text" required placeholder="Seu nome" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-accent-500 focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">E-mail</label>
+                            <input type="email" required placeholder="seu@email.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-accent-500 focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Senha</label>
+                            <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-accent-500 focus:outline-none text-sm">
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-accent-600/20">
+                            Cadastrar-se
+                        </button>
+                    </form>
+
+                    <p class="text-center text-xs text-slate-500">
+                        Já possui conta? <a href="#login" onclick="navigate('login')" class="text-accent-500 font-semibold hover:underline">Fazer Login</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER PUBLIC -->
+    <footer id="public-footer" class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-accent-500"></i>
+                <span>&copy; 2026 PulseTech Blog Platform. Todos os direitos reservados.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-accent-500">Termos</a>
+                <a href="#" class="hover:text-accent-500">Privacidade</a>
+                <a href="#dash-home" onclick="navigate('dash-home')" class="text-accent-500 font-medium">Acesso Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT STATE & LOGIC                  -->
+    <!-- ========================================== -->
+    <script>
+        // Initial Mock Data
+        let appState = {
+            activeView: 'home',
+            activeCategory: 'Todos',
+            searchQuery: '',
+            activePostId: 1,
+            posts: [
+                {
+                    id: 1,
+                    title: 'O Futuro do Desenvolvimento Web com IA em 2026',
+                    category: 'Inteligência Artificial',
+                    summary: 'Como os modelos de linguagem avançados e os agentes autônomos estão remodelando a maneira como escrevemos e mantemos código moderno.',
+                    content: `
+                        <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-300">A inteligência artificial deixou de ser apenas uma ferramenta de auto-completar código para se tornar um arquiteto ativo na criação de aplicações web complexas. Neste artigo, exploramos as tendências que estão dominando 2026.</p>
+                        
+                        <h3 class="font-heading text-xl font-bold mt-6 mb-3 text-slate-900 dark:text-white">1. Desenvolvimento Orientado a Agentes</h3>
+                        <p class="leading-relaxed text-slate-600 dark:text-slate-300">Hoje, os desenvolvedores atuam muito mais como diretores de software. Os agentes cuidam de testes de regressão, otimizações de performance em tempo de execução e até refatoração de código legado com extrema precisão.</p>
+                        
+                        <blockquote class="p-4 my-4 border-l-4 border-accent-500 bg-slate-100 dark:bg-slate-800/50 italic text-slate-700 dark:text-slate-200 rounded-r-lg">
+                            "A chave para a produtividade moderna não é escrever mais linhas de código, mas saber orquestrar os prompts e arquiteturas corretas."
+                        </blockquote>
+
+                        <h3 class="font-heading text-xl font-bold mt-6 mb-3 text-slate-900 dark:text-white">2. UI Dinâmica Gerada em Tempo Real</h3>
+                        <p class="leading-relaxed text-slate-600 dark:text-slate-300">Com bibliotecas ultrarrápidas de renderização, interfaces adaptativas montam layouts personalizados baseados nas preferências instantâneas do usuário.</p>
+                    `,
+                    author: 'Elena Rostova',
+                    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                    date: '24 Out, 2026',
+                    readTime: '5 min de leitura',
+                    views: 14200,
+                    likes: 342,
+                    featured: true,
+                    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&auto=format&fit=crop&q=80',
+                    comments: [
+                        { id: 101, user: 'Lucas Mendes', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80', date: 'Há 2 horas', text: 'Artigo fantástico! Realmente a rotina de dev mudou completamente nos últimos 2 anos.' },
+                        { id: 102, user: 'Camila Rocha', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80', date: 'Há 5 horas', text: 'Excelente análise. Ansiosa pelos próximos posts!' }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'Arquitetura Micro-frontends na Prática',
+                    category: 'Programação',
+                    summary: 'Estratégias para escalar equipes gigantes sem perder a coesão de código e performance da aplicação.',
+                    content: '<p class="leading-relaxed text-slate-600 dark:text-slate-300">Dividir para conquistar. Como separar grandes aplicações monolith em micro-frontends autônomos utilizando Module Federation e rotas isoladas...</p>',
+                    author: 'Gabriel Santos',
+                    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+                    date: '22 Out, 2026',
+                    readTime: '8 min de leitura',
+                    views: 8900,
+                    likes: 189,
+                    featured: false,
+                    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
+                    comments: []
+                },
+                {
+                    id: 3,
+                    title: 'Design System Escalonável: Do Figma ao Código',
+                    category: 'Design',
+                    summary: 'Como manter tokens visuais sincronizados entre os times de produto e frontend com esforço zero.',
+                    content: '<p class="leading-relaxed text-slate-600 dark:text-slate-300">Construir um Design System não é apenas sobre componentes UI, é sobre linguagem e governança visual contínua...</p>',
+                    author: 'Beatriz Lima',
+                    authorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80',
+                    date: '20 Out, 2026',
+                    readTime: '6 min de leitura',
+                    views: 6400,
+                    likes: 215,
+                    featured: false,
+                    image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&auto=format&fit=crop&q=80',
+                    comments: []
+                },
+                {
+                    id: 4,
+                    title: 'Técnicas Avançadas de Foco e Produtividade para Devs',
+                    category: 'Produtividade',
+                    summary: 'Gerenciando overload cognitivo, interrupções e mantendo o estado de Flow por mais tempo.',
+                    content: '<p class="leading-relaxed text-slate-600 dark:text-slate-300">A atenção é o recurso mais valioso do profissional de tecnologia moderno. Dicas para otimizar seus blocos de trabalho de alto valor...</p>',
+                    author: 'Rodrigo Faro',
+                    authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+                    date: '18 Out, 2026',
+                    readTime: '4 min de leitura',
+                    views: 5100,
+                    likes: 98,
+                    featured: false,
+                    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop&q=80',
+                    comments: []
+                }
+            ],
+            categories: ['Todos', 'Inteligência Artificial', 'Programação', 'Design', 'Produtividade', 'Carreira']
+        };
+
+        // NAVIGATION ROUTER
+        function navigate(viewName, param = null) {
+            appState.activeView = viewName;
+
+            // Handle views visibility
+            const isDashboard = viewName.startsWith('dash-') || viewName === 'form-edicao';
+            
+            document.getElementById('public-header').style.display = isDashboard ? 'none' : 'block';
+            document.getElementById('public-footer').style.display = isDashboard ? 'none' : 'block';
+            document.getElementById('public-wrapper').style.display = isDashboard ? 'none' : 'block';
+            document.getElementById('dashboard-wrapper').style.display = isDashboard ? 'flex' : 'none';
+
+            // Hide all view sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+
+            // Show selected view
+            const targetEl = document.getElementById(`view-${viewName}`);
+            if (targetEl) targetEl.classList.add('active');
+
+            // Handle parameter specific views (e.g., Post Detail or Edit Post)
+            if (viewName === 'post' && param) {
+                appState.activePostId = param;
+                renderPostDetail(param);
+            }
+
+            if (viewName === 'form-edicao' && param) {
+                populateEditForm(param);
+            } else if (viewName === 'form-edicao' && !param) {
+                resetEditForm();
+            }
+
+            // Update Dashboard sidebar active links
+            if (isDashboard) {
+                document.querySelectorAll('aside nav button').forEach(b => b.classList.remove('bg-slate-800', 'text-white'));
+                const activeNav = document.getElementById(`nav-${viewName}`);
+                if (activeNav) activeNav.classList.add('bg-slate-800', 'text-white');
+
+                // Title update
+                const titleMap = {
+                    'dash-home': 'Dashboard Executivo',
+                    'dash-registros': 'Gerenciamento de Publicações',
+                    'dash-visitantes': 'Métricas & Audiência',
+                    'dash-settings': 'Configurações do Portal',
+                    'form-edicao': 'Editor de Conteúdo'
+                };
+                document.getElementById('dash-page-title').innerText = titleMap[viewName] || 'Dashboard';
+                renderDashboardPostsTable();
+            }
+
+            // Trigger view specific renders
+            if (viewName === 'home') renderHome();
+            if (viewName === 'categorias') renderCategoriesPage();
+            if (viewName === 'blog') renderBlogPage();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Re-initialize Lucide Icons
+            setTimeout(() => { lucide.createIcons(); }, 50);
+        }
+
+        // THEME TOGGLE (DARK / LIGHT)
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            showToast(isDark ? 'Modo Escuro ativado' : 'Modo Claro ativado', 'info');
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-indigo-600';
+            
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-xl transition-all transform translate-y-2 ${bgClass}`;
+            toast.innerHTML = `
+                <i data-lucide="${type === 'success' ? 'check-circle' : 'info'}" class="w-4 h-4"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // RENDER HOME VIEW
+        function renderHome() {
+            const featured = appState.posts.find(p => p.featured) || appState.posts[0];
+            const heroContainer = document.getElementById('hero-featured-container');
+            
+            heroContainer.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-accent-500/10 text-accent-600 dark:text-accent-400 border border-accent-500/20">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Destaque da Semana
+                        </span>
+                        <h1 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-tight text-slate-900 dark:text-white">
+                            ${featured.title}
+                        </h1>
+                        <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg line-clamp-3">
+                            ${featured.summary}
+                        </p>
+                        <div class="flex items-center gap-4 pt-2">
+                            <img src="${featured.authorAvatar}" class="w-10 h-10 rounded-full object-cover ring-2 ring-accent-500">
+                            <div>
+                                <div class="text-sm font-semibold text-slate-900 dark:text-white">${featured.author}</div>
+                                <div class="text-xs text-slate-500">${featured.date} • ${featured.readTime}</div>
+                            </div>
+                        </div>
+                        <div class="pt-4 flex items-center gap-3">
+                            <button onclick="navigate('post', ${featured.id})" class="px-6 py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-accent-600/25 flex items-center gap-2">
+                                Ler Artigo Completo <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5">
+                        <div class="relative group cursor-pointer overflow-hidden rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800" onclick="navigate('post', ${featured.id})">
+                            <img src="${featured.image}" class="w-full h-80 lg:h-96 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-4 right-4 px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-semibold rounded-full">${featured.category}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Categories list home
+            const catGrid = document.getElementById('home-categories-grid');
+            catGrid.innerHTML = appState.categories.filter(c => c !== 'Todos').map(cat => `
+                <button onclick="filterCategoryNav('${cat}')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-accent-500 text-left transition-all hover:shadow-md group">
+                    <div class="w-8 h-8 rounded-xl bg-accent-500/10 text-accent-500 flex items-center justify-center mb-2 group-hover:bg-accent-600 group-hover:text-white transition-colors">
+                        <i data-lucide="tag" class="w-4 h-4"></i>
+                    </div>
+                    <div class="font-heading font-semibold text-sm text-slate-900 dark:text-white">${cat}</div>
+                </button>
+            `).join('');
+
+            // Posts grid home
+            const postsGrid = document.getElementById('home-posts-grid');
+            postsGrid.innerHTML = appState.posts.map(post => createPostCardHTML(post)).join('');
+        }
+
+        // HELPER TO CREATE POST CARD HTML
+        function createPostCardHTML(post) {
+            return `
+                <article class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800/80 flex flex-col hover:shadow-xl transition-all group">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${post.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">${post.category}</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-400 mb-2">${post.date} • ${post.readTime}</div>
+                            <h4 class="font-heading font-bold text-lg text-slate-900 dark:text-white group-hover:text-accent-500 transition-colors line-clamp-2">
+                                <a href="#post" onclick="navigate('post', ${post.id})">${post.title}</a>
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">${post.summary}</p>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/60 pt-4 text-xs text-slate-500">
+                            <span class="font-medium text-slate-700 dark:text-slate-300">${post.author}</span>
+                            <span class="flex items-center gap-1"><i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i> ${post.likes}</span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // CATEGORIES PAGE LOGIC
+        function renderCategoriesPage() {
+            const btnContainer = document.getElementById('category-filter-buttons');
+            btnContainer.innerHTML = appState.categories.map(cat => `
+                <button onclick="setCategoryFilter('${cat}')" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all ${appState.activeCategory === cat ? 'bg-accent-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            const filtered = appState.activeCategory === 'Todos' 
+                ? appState.posts 
+                : appState.posts.filter(p => p.category === appState.activeCategory);
+
+            const grid = document.getElementById('category-filtered-posts');
+            grid.innerHTML = filtered.length > 0 
+                ? filtered.map(p => createPostCardHTML(p)).join('')
+                : `<div class="col-span-3 text-center py-12 text-slate-400">Nenhum post encontrado nesta categoria.</div>`;
+        }
+
+        function setCategoryFilter(cat) {
+            appState.activeCategory = cat;
+            renderCategoriesPage();
+        }
+
+        function filterCategoryNav(cat) {
+            appState.activeCategory = cat;
+            navigate('categorias');
+        }
+
+        // BLOG LISTING PAGE
+        function renderBlogPage() {
+            const grid = document.getElementById('blog-posts-grid');
+            const filtered = appState.searchQuery 
+                ? appState.posts.filter(p => p.title.toLowerCase().includes(appState.searchQuery.toLowerCase()))
+                : appState.posts;
+
+            grid.innerHTML = filtered.map(p => createPostCardHTML(p)).join('');
+        }
+
+        function handleSearch(val) {
+            appState.searchQuery = val;
+            if (appState.activeView === 'blog') renderBlogPage();
+            else navigate('blog');
+        }
+
+        // POST DETAIL VIEW & COMMENTS & LIKES
+        function renderPostDetail(id) {
+            const post = appState.posts.find(p => p.id === Number(id)) || appState.posts[0];
+            const container = document.getElementById('post-detail-container');
+
+            container.innerHTML = `
+                <!-- Meta Info Header -->
+                <div class="space-y-4 text-center">
+                    <span class="px-3 py-1 bg-accent-500/10 text-accent-600 dark:text-accent-400 text-xs font-semibold rounded-full border border-accent-500/20">${post.category}</span>
+                    <h1 class="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-slate-900 dark:text-white">${post.title}</h1>
+                    <div class="flex items-center justify-center gap-4 text-xs text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <img src="${post.authorAvatar}" class="w-6 h-6 rounded-full object-cover">
+                            <span class="font-medium text-slate-700 dark:text-slate-300">${post.author}</span>
+                        </div>
+                        <span>•</span>
+                        <span>${post.date}</span>
+                        <span>•</span>
+                        <span>${post.readTime}</span>
+                    </div>
+                </div>
+
+                <!-- Cover Image -->
+                <div class="rounded-3xl overflow-hidden shadow-2xl max-h-[450px]">
+                    <img src="${post.image}" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Content Body -->
+                <div class="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-200">
+                    ${post.content}
+                </div>
+
+                <!-- Action Bar (Likes & Share) -->
+                <div class="flex items-center justify-between border-y border-slate-200 dark:border-slate-800 py-4 my-8">
+                    <button onclick="likePost(${post.id})" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold text-sm hover:bg-rose-500/20 transition-colors">
+                        <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                        <span id="like-count">${post.likes} Curtidas</span>
+                    </button>
+                    <div class="flex items-center gap-2 text-sm text-slate-500">
+                        <span>Compartilhar:</span>
+                        <button onclick="showToast('Link copiado para a área de transferência!', 'info')" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="space-y-6 pt-4">
+                    <h3 class="font-heading font-bold text-2xl">Comentários (${post.comments.length})</h3>
+
+                    <!-- Add Comment Form -->
+                    <form onsubmit="handleAddComment(event, ${post.id})" class="flex gap-3">
+                        <div class="w-10 h-10 rounded-full bg-accent-600 text-white flex items-center justify-center font-bold text-sm shrink-0">Eu</div>
+                        <div class="flex-1 space-y-2">
+                            <textarea id="comment-input" required rows="3" placeholder="Escreva seu comentário sobre este artigo..." class="w-full p-3 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:border-accent-500"></textarea>
+                            <button type="submit" class="px-5 py-2 bg-accent-600 hover:bg-accent-700 text-white font-semibold text-xs rounded-xl shadow-md">Publicar Comentário</button>
+                        </div>
+                    </form>
+
+                    <!-- Comments List -->
+                    <div class="space-y-4 pt-4">
+                        ${post.comments.map(c => `
+                            <div class="flex gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                <img src="${c.avatar}" class="w-9 h-9 rounded-full object-cover">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-sm text-slate-900 dark:text-white">${c.user}</span>
+                                        <span class="text-[10px] text-slate-400">${c.date}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">${c.text}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function likePost(id) {
+            const post = appState.posts.find(p => p.id === id);
+            if (post) {
+                post.likes += 1;
+                document.getElementById('like-count').innerText = `${post.likes} Curtidas`;
+                showToast('Obrigado pelo feedback!');
+            }
+        }
+
+        function handleAddComment(e, postId) {
+            e.preventDefault();
+            const input = document.getElementById('comment-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const post = appState.posts.find(p => p.id === postId);
+            if (post) {
+                post.comments.unshift({
+                    id: Date.now(),
+                    user: 'Leitor Conectado',
+                    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                    date: 'Agora mesmo',
+                    text: text
+                });
+                showToast('Comentário publicado com sucesso!');
+                renderPostDetail(postId);
+            }
+        }
+
+        // DASHBOARD POSTS TABLE RENDER
+        function renderDashboardPostsTable() {
+            const tableBody = document.getElementById('dash-posts-table-body');
+            document.getElementById('dash-stat-posts').innerText = appState.posts.length;
+
+            tableBody.innerHTML = appState.posts.map(post => `
+                <tr class="hover:bg-slate-900/40">
+                    <td class="px-6 py-4 font-medium text-white max-w-xs truncate">${post.title}</td>
+                    <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs rounded-full bg-slate-800 text-slate-300">${post.category}</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-xs text-emerald-400 font-medium"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Publicado</span></td>
+                    <td class="px-6 py-4 text-xs text-slate-400">${post.views.toLocaleString()}</td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <button onclick="navigate('form-edicao', ${post.id})" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg" title="Editar"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                        <button onclick="deletePost(${post.id})" class="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg" title="Excluir"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function deletePost(id) {
+            appState.posts = appState.posts.filter(p => p.id !== id);
+            renderDashboardPostsTable();
+            showToast('Post excluído com sucesso!', 'error');
+        }
+
+        // EDIT & CREATE POST FORM
+        function populateEditForm(id) {
+            const post = appState.posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('form-post-heading').innerText = 'Editar Artigo';
+            document.getElementById('edit-post-id').value = post.id;
+            document.getElementById('post-input-title').value = post.title;
+            document.getElementById('post-input-category').value = post.category;
+            document.getElementById('post-input-image').value = post.image;
+            document.getElementById('post-input-summary').value = post.summary;
+            document.getElementById('post-input-content').value = post.content;
+        }
+
+        function resetEditForm() {
+            document.getElementById('form-post-heading').innerText = 'Criar Novo Artigo';
+            document.getElementById('edit-post-id').value = '';
+            document.getElementById('post-input-title').value = '';
+            document.getElementById('post-input-image').value = '';
+            document.getElementById('post-input-summary').value = '';
+            document.getElementById('post-input-content').value = '';
+        }
+
+        function handleSavePost(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-post-id').value;
+            const title = document.getElementById('post-input-title').value;
+            const category = document.getElementById('post-input-category').value;
+            const image = document.getElementById('post-input-image').value || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80';
+            const summary = document.getElementById('post-input-summary').value;
+            const content = document.getElementById('post-input-content').value;
+
+            if (id) {
+                // Update
+                const post = appState.posts.find(p => p.id === Number(id));
+                if (post) {
+                    post.title = title;
+                    post.category = category;
+                    post.image = image;
+                    post.summary = summary;
+                    post.content = content;
+                }
+                showToast('Artigo atualizado com sucesso!');
+            } else {
+                // Create
+                const newPost = {
+                    id: Date.now(),
+                    title,
+                    category,
+                    summary,
+                    content,
+                    author: 'Elena Rostova',
+                    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                    date: 'Hoje',
+                    readTime: '3 min de leitura',
+                    views: 0,
+                    likes: 0,
+                    featured: false,
+                    image,
+                    comments: []
+                };
+                appState.posts.unshift(newPost);
+                showToast('Novo artigo publicado!');
+            }
+
+            navigate('dash-registros');
+        }
+
+        // AUTH & SETTINGS SIMULATION
+        function handleLogin(e) {
+            e.preventDefault();
+            showToast('Login realizado com sucesso!');
+            navigate('dash-home');
+        }
+
+        function loginAsAdmin() {
+            showToast('Sessão iniciada como Administrador');
+            navigate('dash-home');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            showToast('Conta criada com sucesso!');
+            navigate('home');
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            showToast('Inscrição confirmada! Verifique seu e-mail.');
+            e.target.reset();
+        }
+
+        function saveSettings(e) {
+            e.preventDefault();
+            showToast('Configurações salvas!');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // INITIALIZE APP
+        window.onload = function() {
+            lucide.createIcons();
+            renderHome();
+        };
+    </script>
+</body>
+</html>

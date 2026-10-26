@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Blog · Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafc;
+      color: #1e293b;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 24px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* ----- TOP NAV ----- */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+      cursor: pointer;
+    }
+    .logo span { color: #3b82f6; }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.15s;
+      cursor: pointer;
+    }
+    .nav-links a:hover { color: #3b82f6; }
+
+    .nav-links a.dash-direct {
+      color: #3b82f6;
+      font-weight: 600;
+      background: #eef4ff;
+      padding: 8px 16px;
+      border-radius: 40px;
+    }
+    .nav-links a.dash-direct:hover {
+      background: #dbeafe;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: 0.15s;
+      background: transparent;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary { background: #3b82f6; color: white; }
+    .btn-primary:hover { background: #2563eb; }
+
+    .btn-outline { border: 1px solid #cbd5e1; color: #334155; background: white; }
+    .btn-outline:hover { background: #f1f5f9; }
+
+    /* ----- PAGES ----- */
+    .page { display: none; animation: fade 0.2s ease; }
+    .page.active { display: block; }
+    @keyframes fade { from { opacity: 0.3; } to { opacity: 1; } }
+
+    /* ----- HOME ----- */
+    .hero {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e6f0fa 100%);
+      border-radius: 32px;
+      padding: 48px 40px;
+      margin-bottom: 48px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: #0b1e33;
+      max-width: 600px;
+      line-height: 1.2;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: #334155;
+      margin: 16px 0 24px;
+      max-width: 500px;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
+      border: 1px solid #eef2f6;
+      transition: all 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(0, 0, 0, 0.04); }
+    .card i {
+      font-size: 1.8rem;
+      color: #3b82f6;
+      margin-bottom: 16px;
+      background: #eef4ff;
+      padding: 10px;
+      border-radius: 16px;
+    }
+    .card h3 { font-size: 1.3rem; margin-bottom: 8px; }
+    .card p { color: #475569; font-size: 0.95rem; }
+
+    /* ----- BLOG & CATEGORY ----- */
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #0f172a;
+    }
+
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+      margin-bottom: 48px;
+    }
+
+    .post-card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid #edf2f7;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .post-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+    .post-card .category-badge {
+      background: #eef2ff;
+      color: #3b82f6;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 40px;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+    .post-card h3 { font-size: 1.25rem; margin-bottom: 8px; font-weight: 600; }
+    .post-card p { color: #64748b; font-size: 0.9rem; margin-bottom: 16px; }
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    /* ----- SINGLE POST PAGE ----- */
+    .post-hero {
+      background: linear-gradient(135deg, #eef4ff 0%, #e6f0fa 100%);
+      border-radius: 32px;
+      padding: 48px 40px;
+      margin-bottom: 32px;
+    }
+    .post-hero .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #3b82f6;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 20px;
+      text-decoration: none;
+    }
+    .post-hero .back-link:hover { text-decoration: underline; }
+    .post-hero .category-badge {
+      background: white;
+      color: #3b82f6;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 40px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .post-hero h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: #0b1e33;
+      line-height: 1.2;
+      max-width: 800px;
+      margin-bottom: 16px;
+    }
+    .post-hero .post-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #475569;
+      font-size: 0.9rem;
+    }
+    .post-hero .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background: #3b82f6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .post-body {
+      max-width: 780px;
+      margin: 0 auto 64px;
+    }
+    .post-body p {
+      font-size: 1.05rem;
+      color: #334155;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+    .post-body h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      color: #0f172a;
+    }
+    .post-body blockquote {
+      border-left: 4px solid #3b82f6;
+      padding: 12px 24px;
+      background: #f8fafc;
+      border-radius: 0 16px 16px 0;
+      margin: 24px 0;
+      color: #475569;
+      font-style: italic;
+    }
+    .post-body code {
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #db2777;
+    }
+    .post-body pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 16px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .post-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .post-tags span {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* ----- AUTH ----- */
+    .auth-container {
+      max-width: 440px;
+      margin: 40px auto 80px;
+      background: white;
+      border-radius: 32px;
+      padding: 40px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eef2f6;
+    }
+    .auth-container h2 { font-size: 1.9rem; margin-bottom: 8px; font-weight: 700; }
+    .auth-container .sub { color: #64748b; margin-bottom: 28px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 40px;
+      border: 1px solid #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background: #f8fafc;
+      transition: 0.15s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+    .auth-footer { text-align: center; margin-top: 24px; font-size: 0.9rem; color: #64748b; }
+    .auth-footer a { color: #3b82f6; font-weight: 600; text-decoration: none; cursor: pointer; }
+
+    /* ----- DASHBOARD ----- */
+    .dash-layout { display: flex; gap: 32px; margin-bottom: 40px; }
+    .dash-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: 24px;
+      padding: 24px 16px;
+      border: 1px solid #eef2f6;
+      height: fit-content;
+    }
+    .dash-sidebar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 20px 8px;
+      border-bottom: 1px solid #eef2f6;
+      margin-bottom: 20px;
+    }
+    .avatar {
+      background: #3b82f6;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    .dash-nav { display: flex; flex-direction: column; gap: 6px; }
+    .dash-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 40px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: 0.15s;
+      cursor: pointer;
+    }
+    .dash-nav a i { width: 20px; color: #64748b; }
+    .dash-nav a:hover { background: #f1f5f9; }
+    .dash-nav a.active { background: #eef4ff; color: #3b82f6; font-weight: 600; }
+    .dash-nav a.active i { color: #3b82f6; }
+
+    .dash-content {
+      flex: 1;
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      border: 1px solid #eef2f6;
+      min-height: 400px;
+    }
+
+    .dash-page { display: none; }
+    .dash-page.active { display: block; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin: 24px 0 32px;
+    }
+    .stat-item { background: #f8fafc; border-radius: 20px; padding: 20px; }
+    .stat-item .label { color: #64748b; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; }
+    .stat-item .value { font-size: 2rem; font-weight: 700; color: #0f172a; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      text-align: left;
+      padding: 12px 8px;
+      color: #64748b;
+      font-weight: 600;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    td { padding: 14px 8px; border-bottom: 1px solid #f1f5f9; }
+    .badge-success {
+      background: #dcfce7;
+      color: #166534;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+    .badge-warning {
+      background: #fef9c3;
+      color: #854d0e;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .toggle {
+      width: 44px;
+      height: 24px;
+      background: #cbd5e1;
+      border-radius: 40px;
+      position: relative;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .toggle.active { background: #3b82f6; }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: 0.2s;
+    }
+    .toggle.active::after { left: 23px; }
+
+    .footer {
+      text-align: center;
+      padding: 32px 0 24px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .dash-layout { flex-direction: column; }
+      .dash-sidebar { width: 100%; }
+      .hero h1 { font-size: 2.2rem; }
+      .post-hero h1 { font-size: 1.9rem; }
+      .auth-container { padding: 28px; margin: 20px auto; }
+      .post-hero { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <div class="logo" data-page="home">blog<span>.</span></div>
+      <div class="nav-links">
+        <a data-page="home">Home</a>
+        <a data-page="categorias">Categorias</a>
+        <a data-page="blog">Blog</a>
+        <a class="dash-direct" data-page="dashboard"><i class="fas fa-gauge"></i> Dashboard</a>
+      </div>
+      <div class="auth-buttons">
+        <button class="btn btn-outline" data-page="login"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
+        <button class="btn btn-primary" data-page="register"><i class="fas fa-user-plus"></i> Register</button>
+      </div>
+    </nav>
+
+    <!-- ========== HOME ========== -->
+    <div id="home" class="page active">
+      <div class="hero">
+        <h1>Histórias que inspiram, ideias que conectam.</h1>
+        <p>Bem-vindo ao blog moderno — descubra artigos, categorias e uma comunidade vibrante.</p>
+        <button class="btn btn-primary" data-page="blog" style="padding: 12px 32px;">Explorar blog <i class="fas fa-arrow-right"></i></button>
+      </div>
+
+      <h2 class="section-title">Destaques</h2>
+      <div class="featured-grid">
+        <div class="card">
+          <i class="fas fa-pen-fancy"></i>
+          <h3>Escrita criativa</h3>
+          <p>Dicas e técnicas para aprimorar sua escrita e contar histórias memoráveis.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Tendências 2025</h3>
+          <p>O que está moldando o mundo do conteúdo e do design este ano.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-users"></i>
+          <h3>Comunidade</h3>
+          <p>Conecte-se com outros criadores e compartilhe experiências.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CATEGORIAS ========== -->
+    <div id="categorias" class="page">
+      <h2 class="section-title">Categorias</h2>
+      <div class="post-grid">
+        <div class="post-card" data-page="blog">
+          <span class="category-badge">Tecnologia</span>
+          <h3>Inovação & IA</h3>
+          <p>Artigos sobre inteligência artificial, ferramentas e o futuro digital.</p>
+          <div class="post-meta"><i class="far fa-file-alt"></i> 12 artigos</div>
+        </div>
+        <div class="post-card" data-page="blog">
+          <span class="category-badge">Design</span>
+          <h3>UX & UI</h3>
+          <p>Boas práticas de design de interfaces e experiências memoráveis.</p>
+          <div class="post-meta"><i class="far fa-file-alt"></i> 8 artigos</div>
+        </div>
+        <div class="post-card" data-page="blog">
+          <span class="category-badge">Marketing</span>
+          <h3>Growth & Conteúdo</h3>
+          <p>Estratégias para engajar audiências e crescer de forma orgânica.</p>
+          <div class="post-meta"><i class="far fa-file-alt"></i> 15 artigos</div>
+        </div>
+        <div class="post-card" data-page="blog">
+          <span class="category-badge">Lifestyle</span>
+          <h3>Produtividade</h3>
+          <p>Rotinas, ferramentas e hábitos para uma vida mais equilibrada.</p>
+          <div class="post-meta"><i class="far fa-file-alt"></i> 9 artigos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== BLOG ========== -->
+    <div id="blog" class="page">
+      <h2 class="section-title">Todos os artigos</h2>
+      <div class="post-grid">
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Tecnologia</span>
+          <h3>O futuro do desenvolvimento web</h3>
+          <p>Explorando frameworks, performance e as tendências para os próximos anos.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 12 Mar 2025 · 5 min</div>
+        </div>
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Design</span>
+          <h3>Design systems na prática</h3>
+          <p>Como criar e manter um sistema de design escalável e consistente.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 08 Mar 2025 · 7 min</div>
+        </div>
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Marketing</span>
+          <h3>SEO para criadores de conteúdo</h3>
+          <p>Estratégias práticas para aumentar o alcance orgânico dos seus artigos.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 02 Mar 2025 · 4 min</div>
+        </div>
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Lifestyle</span>
+          <h3>Rotina criativa: menos produtividade tóxica</h3>
+          <p>Como encontrar um fluxo de trabalho sustentável e inspirador.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 25 Fev 2025 · 6 min</div>
+        </div>
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Tecnologia</span>
+          <h3>IA generativa no dia a dia</h3>
+          <p>Ferramentas e casos de uso para otimizar tarefas criativas.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 18 Fev 2025 · 8 min</div>
+        </div>
+        <div class="post-card" data-page="post">
+          <span class="category-badge">Design</span>
+          <h3>Microinterações que encantam</h3>
+          <p>Pequenos detalhes que melhoram a experiência do usuário.</p>
+          <div class="post-meta"><i class="far fa-calendar"></i> 10 Fev 2025 · 5 min</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SINGLE POST PAGE ========== -->
+    <div id="post" class="page">
+      <div class="post-hero">
+        <a class="back-link" data-page="blog"><i class="fas fa-arrow-left"></i> Voltar para o blog</a>
+        <br>
+        <span class="category-badge">Tecnologia</span>
+        <h1>O futuro do desenvolvimento web</h1>
+        <div class="post-author">
+          <div class="avatar-sm">A</div>
+          <div>
+            <strong>Ana Silva</strong><br>
+            <span style="font-size:0.8rem; color:#64748b;">12 Mar 2025 · 5 min de leitura</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <p>O desenvolvimento web está passando por uma transformação profunda. Com a popularização de frameworks baseados em componentes, a ascensão da inteligência artificial generativa e a busca constante por performance, os desenvolvedores precisam repensar suas stacks e práticas.</p>
+
+        <p>Neste artigo, exploramos as principais tendências que devem moldar o ecossistema nos próximos anos — desde a adoção massiva de <code>edge functions</code> até o design de interfaces verdadeiramente adaptativas.</p>
+
+        <h2>1. Edge computing e a nova era da performance</h2>
+        <p>Levar a lógica de renderização para a borda da rede já é realidade. Com soluções como Cloudflare Workers e Vercel Edge, é possível entregar conteúdo personalizado em milissegundos, independentemente da localização do usuário.</p>
+
+        <blockquote>"A latência zero não é mais um diferencial competitivo — é uma expectativa básica do usuário."</blockquote>
+
+        <h2>2. Frameworks full-stack com foco em DX</h2>
+        <p>Ferramentas como Next.js, Remix e Astro continuam evoluindo para oferecer uma experiência de desenvolvimento integrada, com rotas, data fetching e otimizações automáticas.</p>
+
+        <pre><code>// Exemplo de server component no Next.js
+export default async function Page() {
+  const posts = await getPosts();
+  return &lt;PostList posts={posts} /&gt;;
+}</code></pre>
+
+        <h2>3. IA como copiloto de desenvolvimento</h2>
+        <p>Ferramentas de IA generativa estão integradas ao fluxo de trabalho, auxiliando desde a escrita de testes até a refatoração de código. O desenvolvedor passa a atuar mais como arquiteto e curador de soluções.</p>
+
+        <p>O futuro é promissor — e aqueles que abraçarem essas mudanças estarão um passo à frente.</p>
+
+        <div class="post-tags">
+          <span>#webdev</span>
+          <span>#performance</span>
+          <span>#edge</span>
+          <span>#nextjs</span>
+          <span>#ia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== LOGIN ========== -->
+    <div id="login" class="page">
+      <div class="auth-container">
+        <h2>Bem-vindo de volta</h2>
+        <p class="sub">Acesse sua conta para gerenciar o blog.</p>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="seu@email.com" value="demo@blog.com">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" placeholder="••••••••" value="123456">
+        </div>
+        <button class="btn btn-primary btn-full" data-page="dashboard">Entrar</button>
+        <div class="auth-footer">
+          Não tem conta? <a data-page="register">Criar conta</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== REGISTER ========== -->
+    <div id="register" class="page">
+      <div class="auth-container">
+        <h2>Criar conta</h2>
+        <p class="sub">Junte-se à comunidade e comece a publicar.</p>
+        <div class="form-group">
+          <label>Nome completo</label>
+          <input type="text" placeholder="Seu nome" value="Ana Silva">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="seu@email.com" value="ana@blog.com">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" placeholder="••••••••" value="123456">
+        </div>
+        <button class="btn btn-primary btn-full" data-page="dashboard">Registrar</button>
+        <div class="auth-footer">
+          Já tem conta? <a data-page="login">Fazer login</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div id="dashboard" class="page">
+      <div class="dash-layout">
+        <aside class="dash-sidebar">
+          <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+              <strong style="font-size:0.95rem;">Ana Silva</strong>
+              <div style="font-size:0.75rem; color:#64748b;">admin@blog.com</div>
+            </div>
+          </div>
+          <nav class="dash-nav">
+            <a class="dash-link active" data-dash="dash-home"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a class="dash-link" data-dash="dash-registros"><i class="fas fa-file-alt"></i> Registros</a>
+            <a class="dash-link" data-dash="dash-visitantes"><i class="fas fa-users"></i> Visitantes</a>
+            <a class="dash-link" data-dash="dash-settings"><i class="fas fa-cog"></i> Settings</a>
+          </nav>
+          <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #eef2f6;">
+            <a class="dash-link" data-page="home" style="color:#ef4444;"><i class="fas fa-arrow-left"></i> Sair do dash</a>
+          </div>
+        </aside>
+
+        <div class="dash-content">
+          <div id="dash-home" class="dash-page active">
+            <h2 style="font-size:1.7rem; font-weight:700; margin-bottom: 8px;">Visão geral</h2>
+            <p style="color:#64748b;">Bem-vindo de volta, Ana! Aqui está o resumo do seu blog.</p>
+            <div class="stats-grid">
+              <div class="stat-item"><div class="label">Posts publicados</div><div class="value">24</div></div>
+              <div class="stat-item"><div class="label">Visitantes (mês)</div><div class="value">4.2k</div></div>
+              <div class="stat-item"><div class="label">Comentários</div><div class="value">128</div></div>
+              <div class="stat-item"><div class="label">Engajamento</div><div class="value">68%</div></div>
+            </div>
+            <h3 style="font-size:1.2rem; margin: 24px 0 16px;">Atividade recente</h3>
+            <table>
+              <tr><th>Post</th><th>Data</th><th>Status</th></tr>
+              <tr><td>O futuro do desenvolvimento web</td><td>12 Mar 2025</td><td><span class="badge-success">Publicado</span></td></tr>
+              <tr><td>Design systems na prática</td><td>08 Mar 2025</td><td><span class="badge-success">Publicado</span></td></tr>
+              <tr><td>SEO para criadores</td><td>02 Mar 2025</td><td><span class="badge-warning">Rascunho</span></td></tr>
+            </table>
+          </div>
+
+          <div id="dash-registros" class="dash-page">
+            <h2 style="font-size:1.7rem; font-weight:700; margin-bottom: 8px;">Registros</h2>
+            <p style="color:#64748b;">Gerencie seus artigos e rascunhos.</p>
+            <table style="margin-top: 24px;">
+              <tr><th>Título</th><th>Categoria</th><th>Status</th><th>Data</th></tr>
+              <tr><td>O futuro do desenvolvimento web</td><td>Tecnologia</td><td><span class="badge-success">Publicado</span></td><td>12 Mar 2025</td></tr>
+              <tr><td>Design systems na prática</td><td>Design</td><td><span class="badge-success">Publicado</span></td><td>08 Mar 2025</td></tr>
+              <tr><td>SEO para criadores</td><td>Marketing</td><td><span class="badge-warning">Rascunho</span></td><td>02 Mar 2025</td></tr>
+              <tr><td>Rotina criativa</td><td>Lifestyle</td><td><span class="badge-success">Publicado</span></td><td>25 Fev 2025</td></tr>
+              <tr><td>IA generativa no dia a dia</td><td>Tecnologia</td><td><span class="badge-warning">Rascunho</span></td><td>18 Fev 2025</td></tr>
+            </table>
+          </div>
+
+          <div id="dash-visitantes" class="dash-page">
+            <h2 style="font-size:1.7rem; font-weight:700; margin-bottom: 8px;">Visitantes</h2>
+            <p style="color:#64748b;">Últimos 7 dias de tráfego no blog.</p>
+            <div class="stats-grid" style="margin-top: 24px;">
+              <div class="stat-item"><div class="label">Segunda</div><div class="value">620</div></div>
+              <div class="stat-item"><div class="label">Terça</div><div class="value">780</div></div>
+              <div class="stat-item"><div class="label">Quarta</div><div class="value">540</div></div>
+              <div class="stat-item"><div class="label">Quinta</div><div class="value">910</div></div>
+              <div class="stat-item"><div class="label">Sexta</div><div class="value">1100</div></div>
+              <div class="stat-item"><div class="label">Sábado</div><div class="value">820</div></div>
+              <div class="stat-item"><div class="label">Domingo</div><div class="value">670</div></div>
+            </div>
+          </div>
+
+          <div id="dash-settings" class="dash-page">
+            <h2 style="font-size:1.7rem; font-weight:700; margin-bottom: 8px;">Settings</h2>
+            <p style="color:#64748b;">Preferências da conta e do blog.</p>
+            <div style="margin-top: 24px;">
+              <div class="settings-row">
+                <div><strong>Notificações por email</strong><br><span style="font-size:0.85rem; color:#64748b;">Receber atualizações sobre novos comentários.</span></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="settings-row">
+                <div><strong>Modo escuro</strong><br><span style="font-size:0.85rem; color:#64748b;">Alternar tema do dashboard.</span></div>
+                <div class="toggle" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="settings-row">
+                <div><strong>Publicação automática</strong><br><span style="font-size:0.85rem; color:#64748b;">Publicar posts agendados automaticamente.</span></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="settings-row">
+                <div><strong>Comentários</strong><br><span style="font-size:0.85rem; color:#64748b;">Permitir comentários nos artigos.</span></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2025 blog. — Mockup interativo para testes.
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const pages = document.querySelectorAll('.page');
+      const dashPages = document.querySelectorAll('.dash-page');
+      const dashLinks = document.querySelectorAll('.dash-link');
+
+      function showPage(pageId) {
+        pages.forEach(p => p.classList.remove('active'));
+        const target = document.getElementById(pageId);
+        if (target) target.classList.add('active');
+
+        if (pageId === 'dashboard') {
+          dashPages.forEach(dp => dp.classList.remove('active'));
+          document.getElementById('dash-home').classList.add('active');
+          dashLinks.forEach(l => l.classList.remove('active'));
+          const defaultLink = document.querySelector('.dash-link[data-dash="dash-home"]');
+          if (defaultLink) defaultLink.classList.add('active');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Main nav & any element with data-page
+      document.querySelectorAll('[data-page]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          const pageId = el.getAttribute('data-page');
+          if (!pageId) return;
+
+          // Inner dashboard pages
+          if (['dash-home','dash-registros','dash-visitantes','dash-settings'].includes(pageId)) {
+            showPage('dashboard');
+            dashPages.forEach(dp => dp.classList.remove('active'));
+            const dashTarget = document.getElementById(pageId);
+            if (dashTarget) dashTarget.classList.add('active');
+            dashLinks.forEach(l => l.classList.remove('active'));
+            const match = document.querySelector(`.dash-link[data-dash="${pageId}"]`);
+            if (match) match.classList.add('active');
+          } else {
+            showPage(pageId);
+          }
+        });
+      });
+
+      // Sidebar dashboard links
+      dashLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const dashPageId = link.getAttribute('data-dash');
+          if (!dashPageId) return;
+          showPage('dashboard');
+          dashPages.forEach(dp => dp.classList.remove('active'));
+          const targetDash = document.getElementById(dashPageId);
+          if (targetDash) targetDash.classList.add('active');
+          dashLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+
+      showPage('home');
+    })();
+  </script>
+</body>
+</html>
