@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexus Blog — Mockup Moderno</title>
+<style>
+  :root {
+    --bg: #0e0a14;
+    --bg-2: #16101f;
+    --surface: #1c1528;
+    --surface-2: #261d36;
+    --border: #332847;
+    --text: #f0e9f7;
+    --text-dim: #a89bbd;
+    --primary: #a855f7;
+    --primary-2: #ec4899;
+    --accent: #f59e0b;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(0,0,0,.4);
+    --grad: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  }
+  [data-theme="light"] {
+    --bg: #faf7fc;
+    --bg-2: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f5eef9;
+    --border: #e8dcee;
+    --text: #1a0f2e;
+    --text-dim: #6b5a82;
+    --shadow: 0 10px 30px rgba(168,85,247,.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 24px;
+    padding: 14px 20px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.15rem; letter-spacing: .3px;
+  }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--grad);
+    display: grid; place-items: center; color: white; font-weight: 900;
+    box-shadow: 0 6px 18px rgba(236,72,153,.4);
+  }
+  .nav-links { display: flex; gap: 6px; margin-left: 12px; flex: 1; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 10px;
+    color: var(--text-dim); font-weight: 500; font-size: .95rem;
+    transition: all .2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--text); background: var(--surface);
+  }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); display: grid; place-items: center;
+    transition: all .2s;
+  }
+  .icon-btn:hover { background: var(--surface-2); transform: translateY(-1px); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-weight: 600; font-size: .92rem;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all .2s;
+  }
+  .btn:hover { background: var(--surface-2); transform: translateY(-1px); }
+  .btn-primary {
+    background: var(--grad); border: none; color: white;
+    box-shadow: 0 6px 18px rgba(168,85,247,.35);
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-ghost { background: transparent; }
+  .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+  .btn-danger:hover { background: var(--danger); color: white; }
+
+  /* MAIN */
+  main { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+  .page { display: none; animation: fadeIn .35s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HERO */
+  .hero {
+    position: relative; overflow: hidden;
+    border-radius: 24px; padding: 60px 40px;
+    background: var(--grad);
+    color: white; margin-bottom: 40px;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,255,255,.2), transparent 50%);
+  }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 14px; font-weight: 800; line-height: 1.1; position: relative; }
+  .hero p { font-size: 1.1rem; opacity: .9; max-width: 600px; margin: 0 0 24px; position: relative; }
+  .hero .btn { background: white; color: #1a0f2e; border: none; position: relative; }
+
+  /* SECTIONS */
+  .section-title {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 0 0 20px;
+  }
+  .section-title h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+  .section-title a { color: var(--primary-2); font-size: .9rem; font-weight: 600; }
+
+  /* CARDS */
+  .grid { display: grid; gap: 20px; }
+  .grid-3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: all .25s; cursor: pointer;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--primary-2) 50%, var(--border)); }
+  .card-img {
+    height: 180px; background: var(--grad);
+    position: relative; display: grid; place-items: center;
+    color: white; font-size: 3rem; font-weight: 800;
+  }
+  .card-img.alt1 { background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%); }
+  .card-img.alt2 { background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%); }
+  .card-img.alt3 { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+  .card-body { padding: 18px; }
+  .card-tag {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    background: color-mix(in srgb, var(--primary-2) 15%, transparent);
+    color: var(--primary-2); font-size: .75rem; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 700; }
+  .card p { margin: 0 0 14px; color: var(--text-dim); font-size: .92rem; line-height: 1.55; }
+  .card-meta { display: flex; justify-content: space-between; color: var(--text-dim); font-size: .82rem; }
+
+  /* CATEGORIES */
+  .cat-card {
+    padding: 24px; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    transition: all .2s; cursor: pointer;
+  }
+  .cat-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+  .cat-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--grad); color: white;
+    display: grid; place-items: center; font-size: 1.5rem;
+  }
+  .cat-info h4 { margin: 0 0 4px; font-size: 1.05rem; }
+  .cat-info span { color: var(--text-dim); font-size: .85rem; }
+
+  /* AUTH */
+  .auth-wrap {
+    max-width: 440px; margin: 40px auto;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px;
+    box-shadow: var(--shadow);
+  }
+  .auth-wrap h2 { margin: 0 0 6px; font-size: 1.6rem; }
+  .auth-wrap .sub { color: var(--text-dim); margin: 0 0 24px; font-size: .95rem; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: .85rem; margin-bottom: 6px; color: var(--text-dim); font-weight: 500; }
+  .field input, .field textarea, .field select {
+    width: 100%; padding: 12px 14px; border-radius: 10px;
+    background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--text); font-size: .95rem; font-family: inherit;
+    transition: border .2s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none; border-color: var(--primary);
+  }
+  .auth-wrap .btn { width: 100%; justify-content: center; margin-top: 8px; }
+  .auth-switch { text-align: center; margin-top: 18px; color: var(--text-dim); font-size: .9rem; }
+  .auth-switch a { color: var(--primary-2); font-weight: 600; cursor: pointer; }
+
+  /* DASHBOARD LAYOUT */
+  .dash-layout {
+    display: grid; grid-template-columns: 240px 1fr; gap: 24px;
+  }
+  .sidebar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; height: fit-content;
+    position: sticky; top: 90px;
+  }
+  .sidebar h5 { margin: 8px 12px; font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+  .sidebar a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    color: var(--text-dim); font-weight: 500; font-size: .93rem;
+    margin-bottom: 2px;
+  }
+  .sidebar a:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar a.active {
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary-2);
+  }
+  .sidebar a svg { width: 18px; height: 18px; }
+
+  .dash-content { min-width: 0; }
+  .dash-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+  }
+  .dash-header h1 { margin: 0; font-size: 1.6rem; }
+  .dash-header p { margin: 4px 0 0; color: var(--text-dim); font-size: .92rem; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .stat-label { color: var(--text-dim); font-size: .85rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .stat-value { font-size: 1.8rem; font-weight: 800; margin-bottom: 4px; }
+  .stat-delta { font-size: .82rem; color: var(--accent); font-weight: 600; }
+  .stat-delta.down { color: var(--danger); }
+
+  /* CHART */
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 24px;
+  }
+  .chart-card h3 { margin: 0 0 16px; font-size: 1.05rem; }
+  .chart { width: 100%; height: 220px; }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 14px 18px; text-align: left; font-size: .92rem; }
+  th { background: var(--surface-2); color: var(--text-dim); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .5px; }
+  td { border-top: 1px solid var(--border); }
+  tr:hover td { background: color-mix(in srgb, var(--surface-2) 50%, transparent); }
+  .badge {
+    padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600;
+    display: inline-block;
+  }
+  .badge-pub { background: color-mix(in srgb, #10b981 15%, transparent); color: #10b981; }
+  .badge-draft { background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning); }
+  .row-actions { display: flex; gap: 6px; }
+  .row-actions button {
+    padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-dim); font-size: .8rem;
+  }
+  .row-actions button:hover { color: var(--text); background: var(--surface-2); }
+
+  /* SETTINGS */
+  .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .setting-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+  }
+  .setting-card h3 { margin: 0 0 16px; font-size: 1.05rem; }
+  .toggle {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .toggle:last-child { border-bottom: none; }
+  .switch {
+    width: 44px; height: 24px; background: var(--border);
+    border-radius: 999px; position: relative; cursor: pointer;
+    transition: background .2s;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: white; border-radius: 50%;
+    transition: transform .2s;
+  }
+  .switch.on { background: var(--primary); }
+  .switch.on::after { transform: translateX(20px); }
+
+  /* MODAL */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px; max-width: 560px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 { margin: 0 0 18px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    padding: 14px 20px; border-radius: 12px;
+    box-shadow: var(--shadow); z-index: 200;
+    transform: translateX(120%); transition: transform .3s;
+  }
+  .toast.show { transform: translateX(0); }
+  .toast.error { border-left-color: var(--danger); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 20px; text-align: center;
+    color: var(--text-dim); font-size: .88rem;
+  }
+
+  /* ========= POST PAGE ========= */
+  .post-wrap { max-width: 780px; margin: 0 auto; }
+  .post-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text-dim); font-size: .9rem; font-weight: 500;
+    margin-bottom: 20px; cursor: pointer;
+    transition: color .2s;
+  }
+  .post-back:hover { color: var(--primary-2); }
+  .post-header { margin-bottom: 28px; }
+  .post-header .card-tag { font-size: .8rem; padding: 5px 12px; }
+  .post-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.2; margin: 14px 0 18px; font-weight: 800;
+  }
+  .post-meta {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    color: var(--text-dim); font-size: .9rem;
+  }
+  .post-author {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--grad); color: white;
+    display: grid; place-items: center; font-weight: 700;
+  }
+  .post-cover {
+    height: 340px; border-radius: 20px;
+    background: var(--grad); color: white;
+    display: grid; place-items: center;
+    font-size: 6rem; margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .post-cover::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.2), transparent 60%);
+  }
+  .post-cover.alt1 { background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%); }
+  .post-cover.alt2 { background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%); }
+  .post-cover.alt3 { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+
+  /* ARTICLE CONTENT */
+  .post-content {
+    font-size: 1.08rem; line-height: 1.8; color: var(--text);
+  }
+  .post-content p { margin: 0 0 1.3em; }
+  .post-content h2 {
+    font-size: 1.5rem; margin: 2em 0 .7em; font-weight: 700;
+  }
+  .post-content h3 {
+    font-size: 1.2rem; margin: 1.5em 0 .5em; font-weight: 700;
+  }
+  .post-content blockquote {
+    margin: 1.8em 0; padding: 20px 24px;
+    border-left: 4px solid var(--primary-2);
+    background: var(--surface); border-radius: 0 12px 12px 0;
+    font-style: italic; color: var(--text-dim);
+  }
+  .post-content blockquote::before { content: "“"; font-size: 2rem; color: var(--primary-2); line-height: 0; vertical-align: -0.3em; margin-right: 6px; }
+  .post-content ul, .post-content ol {
+    margin: 0 0 1.3em 1.2em; padding: 0;
+  }
+  .post-content li { margin-bottom: .5em; }
+  .post-content code {
+    background: var(--surface-2); padding: 2px 8px; border-radius: 6px;
+    font-size: .9em; font-family: "SF Mono", Menlo, monospace;
+  }
+  .post-content pre {
+    background: var(--surface-2); padding: 18px; border-radius: 12px;
+    overflow-x: auto; margin: 1.5em 0;
+    border: 1px solid var(--border);
+  }
+  .post-content pre code { background: transparent; padding: 0; }
+
+  /* TAGS */
+  .post-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 32px 0; padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .post-tags span {
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: .82rem; color: var(--text-dim);
+    transition: all .2s; cursor: pointer;
+  }
+  .post-tags span:hover { color: var(--primary-2); border-color: var(--primary-2); }
+
+  /* AUTHOR BOX */
+  .author-box {
+    display: flex; gap: 20px; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; margin: 32px 0;
+  }
+  .author-box .avatar { width: 64px; height: 64px; font-size: 1.4rem; flex-shrink: 0; }
+  .author-box h4 { margin: 0 0 4px; font-size: 1.05rem; }
+  .author-box p { margin: 0; color: var(--text-dim); font-size: .92rem; line-height: 1.5; }
+
+  /* NAVIGATION */
+  .post-nav {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin: 32px 0;
+  }
+  .post-nav-item {
+    padding: 18px; border-radius: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    cursor: pointer; transition: all .2s;
+  }
+  .post-nav-item:hover { border-color: var(--primary-2); transform: translateY(-2px); }
+  .post-nav-item small { color: var(--text-dim); font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; }
+  .post-nav-item div { font-weight: 600; margin-top: 6px; font-size: .95rem; }
+  .post-nav-item.next { text-align: right; }
+
+  /* SUGGESTIONS */
+  .suggestions {
+    margin-top: 56px; padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .suggestions h2 {
+    font-size: 1.5rem; margin: 0 0 20px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .suggestions h2::before {
+    content: "✨"; font-size: 1.2rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 820px) {
+    .dash-layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .nav-links { display: none; }
+    .hero { padding: 40px 24px; }
+    .post-cover { height: 220px; font-size: 4rem; }
+    .post-nav { grid-template-columns: 1fr; }
+    .author-box { flex-direction: column; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- HEADER -->
+<header>
+  <div class="nav">
+    <a class="logo" href="#" onclick="navigate('home')">
+      <div class="logo-mark">N</div>
+      <span>Nexus<span style="color:var(--primary-2)">.</span></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#" data-route="home">Home</a>
+      <a href="#" data-route="categorias">Categorias</a>
+      <a href="#" data-route="blog">Blog</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <div id="authButtons">
+        <button class="btn btn-ghost" onclick="navigate('login')">Entrar</button>
+        <button class="btn btn-primary" onclick="navigate('register')">Cadastrar</button>
+      </div>
+      <div id="userMenu" style="display:none; align-items:center; gap:10px;">
+        <span style="font-size:.9rem; color:var(--text-dim);">Olá, <b id="userName" style="color:var(--text)"></b></span>
+        <button class="btn btn-ghost" onclick="navigate('dash-home')">Dashboard</button>
+        <button class="btn btn-ghost" onclick="logout()">Sair</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page" id="page-home">
+    <div class="hero">
+      <h1>Histórias que inspiram.<br/>Ideias que transformam.</h1>
+      <p>Bem-vindo ao Nexus — um espaço moderno para explorar tecnologia, design, produtividade e cultura digital.</p>
+      <button class="btn" onclick="navigate('blog')">Explorar artigos →</button>
+    </div>
+
+    <div class="section-title">
+      <h2>Em destaque</h2>
+      <a href="#" onclick="navigate('blog'); return false;">Ver todos →</a>
+    </div>
+    <div class="grid grid-3" id="featuredPosts"></div>
+
+    <div class="section-title" style="margin-top:40px;">
+      <h2>Categorias populares</h2>
+      <a href="#" onclick="navigate('categorias'); return false;">Ver todas →</a>
+    </div>
+    <div class="grid grid-3" id="featuredCats"></div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="page" id="page-categorias">
+    <div class="section-title"><h2>Todas as categorias</h2></div>
+    <div class="grid grid-3" id="allCats"></div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="page" id="page-blog">
+    <div class="section-title">
+      <h2>Blog</h2>
+      <select id="filterCat" class="btn" style="padding:8px 12px;">
+        <option value="">Todas as categorias</option>
+      </select>
+    </div>
+    <div class="grid grid-3" id="allPosts"></div>
+  </section>
+
+  <!-- POST COMPLETO -->
+  <section class="page" id="page-post">
+    <div class="post-wrap" id="postContent"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="page" id="page-login">
+    <div class="auth-wrap">
+      <h2>Entrar</h2>
+      <p class="sub">Acesse sua conta para gerenciar o blog.</p>
+      <form onsubmit="doLogin(event)">
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="loginEmail" required placeholder="voce@exemplo.com" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" id="loginPass" required placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary" type="submit">Entrar</button>
+      </form>
+      <p class="auth-switch">Não tem conta? <a onclick="navigate('register')">Cadastre-se</a></p>
+      <p style="margin-top:14px; font-size:.82rem; color:var(--text-dim); text-align:center;">
+        💡 Dica: use qualquer e-mail/senha para testar.
+      </p>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="page" id="page-register">
+    <div class="auth-wrap">
+      <h2>Criar conta</h2>
+      <p class="sub">Comece a publicar seus artigos em minutos.</p>
+      <form onsubmit="doRegister(event)">
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" id="regName" required placeholder="Seu nome" />
+        </div>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="regEmail" required placeholder="voce@exemplo.com" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" id="regPass" required minlength="4" placeholder="Mínimo 4 caracteres" />
+        </div>
+        <button class="btn btn-primary" type="submit">Criar conta</button>
+      </form>
+      <p class="auth-switch">Já tem conta? <a onclick="navigate('login')">Entrar</a></p>
+    </div>
+  </section>
+
+  <!-- DASH HOME -->
+  <section class="page" id="page-dash-home">
+    <div class="dash-layout">
+      <aside class="sidebar" id="sidebar1"></aside>
+      <div class="dash-content">
+        <div class="dash-header">
+          <div>
+            <h1>Visão geral</h1>
+            <p>Acompanhe o desempenho do seu blog em tempo real.</p>
+          </div>
+        </div>
+        <div class="stats" id="dashStats"></div>
+        <div class="chart-card">
+          <h3>Visitantes dos últimos 7 dias</h3>
+          <svg class="chart" id="chartVisitors" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="chart-card">
+          <h3>Posts recentes</h3>
+          <div id="recentPosts"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH REGISTROS -->
+  <section class="page" id="page-dash-registros">
+    <div class="dash-layout">
+      <aside class="sidebar" id="sidebar2"></aside>
+      <div class="dash-content">
+        <div class="dash-header">
+          <div>
+            <h1>Registros / Posts</h1>
+            <p>Gerencie seus artigos publicados e rascunhos.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openPostModal()">+ Novo post</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Status</th>
+                <th>Visualizações</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="postsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH VISITANTES -->
+  <section class="page" id="page-dash-visitantes">
+    <div class="dash-layout">
+      <aside class="sidebar" id="sidebar3"></aside>
+      <div class="dash-content">
+        <div class="dash-header">
+          <div>
+            <h1>Visitantes</h1>
+            <p>Análise detalhada do tráfego do blog.</p>
+          </div>
+        </div>
+        <div class="stats" id="visitStats"></div>
+        <div class="chart-card">
+          <h3>Tráfego por origem</h3>
+          <svg class="chart" id="chartSources" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="chart-card">
+          <h3>Últimos visitantes</h3>
+          <div class="table-wrap" style="border:none;">
+            <table>
+              <thead><tr><th>Origem</th><th>País</th><th>Página</th><th>Duração</th></tr></thead>
+              <tbody id="visitorsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH SETTINGS -->
+  <section class="page" id="page-dash-settings">
+    <div class="dash-layout">
+      <aside class="sidebar" id="sidebar4"></aside>
+      <div class="dash-content">
+        <div class="dash-header">
+          <div>
+            <h1>Configurações</h1>
+            <p>Personalize seu blog e preferências.</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <div class="setting-card">
+            <h3>Perfil</h3>
+            <div class="field">
+              <label>Nome do blog</label>
+              <input type="text" id="setBlogName" value="Nexus Blog" />
+            </div>
+            <div class="field">
+              <label>Descrição</label>
+              <textarea rows="3" id="setDesc">Um blog moderno sobre tecnologia, design e cultura digital.</textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Salvar alterações</button>
+          </div>
+          <div class="setting-card">
+            <h3>Preferências</h3>
+            <div class="toggle">
+              <div>
+                <div style="font-weight:600;">Modo escuro</div>
+                <div style="font-size:.82rem; color:var(--text-dim);">Ativar tema escuro</div>
+              </div>
+              <div class="switch" id="swTheme" onclick="toggleTheme(); updateSwitches();"></div>
+            </div>
+            <div class="toggle">
+              <div>
+                <div style="font-weight:600;">Notificações por e-mail</div>
+                <div style="font-size:.82rem; color:var(--text-dim);">Receber atualizações</div>
+              </div>
+              <div class="switch on" onclick="this.classList.toggle('on'); toast('Preferência atualizada')"></div>
+            </div>
+            <div class="toggle">
+              <div>
+                <div style="font-weight:600;">Comentários</div>
+                <div style="font-size:.82rem; color:var(--text-dim);">Permitir nos posts</div>
+              </div>
+              <div class="switch on" onclick="this.classList.toggle('on'); toast('Preferência atualizada')"></div>
+            </div>
+            <div class="toggle">
+              <div>
+                <div style="font-weight:600;">SEO avançado</div>
+                <div style="font-size:.82rem; color:var(--text-dim);">Meta tags automáticas</div>
+              </div>
+              <div class="switch" onclick="this.classList.toggle('on'); toast('Preferência atualizada')"></div>
+            </div>
+          </div>
+          <div class="setting-card">
+            <h3>Conta</h3>
+            <p style="color:var(--text-dim); font-size:.9rem; margin-top:0;">Usuário: <b id="setEmail"></b></p>
+            <button class="btn" onclick="toast('Senha alterada com sucesso!')">Alterar senha</button>
+            <button class="btn btn-danger" onclick="if(confirm('Sair da conta?')) logout()" style="margin-top:8px;">Sair da conta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Nexus Blog — Mockup demonstrativo feito com HTML, CSS e JavaScript.
+</footer>
+
+<!-- MODAL POST -->
+<div class="modal-bg" id="postModal">
+  <div class="modal">
+    <h3 id="modalTitle">Novo post</h3>
+    <div class="field">
+      <label>Título</label>
+      <input type="text" id="postTitle" placeholder="Título do post" />
+    </div>
+    <div class="field">
+      <label>Categoria</label>
+      <select id="postCat"></select>
+    </div>
+    <div class="field">
+      <label>Resumo</label>
+      <textarea id="postExcerpt" rows="2" placeholder="Breve descrição"></textarea>
+    </div>
+    <div class="field">
+      <label>Status</label>
+      <select id="postStatus">
+        <option value="published">Publicado</option>
+        <option value="draft">Rascunho</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closePostModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePost()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========= DATA ========= */
+const CATEGORIES = [
+  { id: 'tech', name: 'Tecnologia', icon: '💻', count: 24 },
+  { id: 'design', name: 'Design', icon: '🎨', count: 18 },
+  { id: 'prod', name: 'Produtividade', icon: '⚡', count: 12 },
+  { id: 'culture', name: 'Cultura', icon: '📚', count: 9 },
+  { id: 'business', name: 'Negócios', icon: '📈', count: 15 },
+  { id: 'ai', name: 'Inteligência Artificial', icon: '🤖', count: 21 },
+];
+
+const DEFAULT_POSTS = [
+  {
+    id: 1, title: 'O futuro do design com IA generativa', cat: 'design',
+    excerpt: 'Como ferramentas de IA estão remodelando o fluxo criativo dos designers modernos.',
+    content: [
+      { type: 'p', text: 'O design está passando por sua maior transformação em décadas. Ferramentas de IA generativa não estão apenas automatizando tarefas repetitivas — elas estão redefinindo o que significa ser designer.' },
+      { type: 'h2', text: 'Do briefing ao protótipo em minutos' },
+      { type: 'p', text: 'Imagine receber um briefing complexo e, em menos de cinco minutos, ter três direções visuais completas, com paletas, tipografia e layout. Isso já é realidade com ferramentas como Midjourney, Figma AI e Adobe Firefly integrados ao fluxo de trabalho.' },
+      { type: 'blockquote', text: 'A IA não substitui o designer. Ela amplifica sua capacidade de explorar possibilidades que antes levariam semanas.' },
+      { type: 'h2', text: 'O que muda na prática' },
+      { type: 'ul', items: [
+        'Geração de variações de layout em segundos',
+        'Criação de assets personalizados sob demanda',
+        'Análise automática de acessibilidade e contraste',
+        'Tradução de conceitos abstratos em visuais concretos'
+      ]},
+      { type: 'h2', text: 'O papel humano permanece essencial' },
+      { type: 'p', text: 'Apesar do avanço, o julgamento crítico, a empatia com o usuário e a curadoria estratégica continuam sendo habilidades puramente humanas. O designer do futuro será mais curador, estrategista e menos executor manual.' },
+      { type: 'p', text: 'A pergunta já não é "se" a IA vai transformar o design, mas "como" você vai se adaptar a essa nova realidade.' }
+    ],
+    tags: ['design', 'IA', 'futuro', 'ferramentas'],
+    status: 'published', views: 1240, date: '2026-10-25', img: '', readTime: 6,
+    author: { name: 'Marina Costa', bio: 'Design lead com 10 anos de experiência em produtos digitais.' }
+  },
+  {
+    id: 2, title: 'WebAssembly: além do navegador', cat: 'tech',
+    excerpt: 'Descubra como o Wasm está expandindo fronteiras para servidores, edge e IoT.',
+    content: [
+      { type: 'p', text: 'WebAssembly começou como uma forma de rodar código de alta performance no navegador. Hoje, é muito mais que isso — é uma plataforma universal de execução.' },
+      { type: 'h2', text: 'Wasm no servidor' },
+      { type: 'p', text: 'Com projetos como WASI (WebAssembly System Interface), o Wasm agora roda fora do navegador com acesso seguro a arquivos, rede e sistema. Empresas como Cloudflare e Fastly já usam Wasm em suas edge networks.' },
+      { type: 'h3', text: 'Vantagens sobre containers' },
+      { type: 'ul', items: [
+        'Inicialização em milissegundos (vs. segundos de containers)',
+        'Sandboxing nativo e seguro',
+        'Portabilidade entre arquiteturas',
+        'Tamanho de binários drasticamente menor'
+      ]},
+      { type: 'blockquote', text: 'Wasm está para execução de código o que HTTP esteve para comunicação: um padrão universal.' },
+      { type: 'h2', text: 'Casos de uso emergentes' },
+      { type: 'p', text: 'De plugins seguros em editores de código a funções serverless ultra-rápidas, passando por jogos cross-platform e até blockchain — o Wasm está em todo lugar.' },
+      { type: 'p', text: 'Se você ainda não experimentou, 2026 é o ano ideal para começar.' }
+    ],
+    tags: ['webassembly', 'wasm', 'backend', 'performance'],
+    status: 'published', views: 890, date: '2026-10-23', img: 'alt1', readTime: 8,
+    author: { name: 'Rafael Mendes', bio: 'Engenheiro de software focado em sistemas distribuídos.' }
+  },
+  {
+    id: 3, title: 'Hábitos de alta performance', cat: 'prod',
+    excerpt: '5 práticas simples que transformam sua rotina e multiplicam seu foco.',
+    content: [
+      { type: 'p', text: 'Alta performance não é sobre trabalhar mais horas. É sobre trabalhar com intenção. Depois de entrevistar mais de 50 profissionais de alto desempenho, identifiquei padrões claros.' },
+      { type: 'h2', text: '1. O ritual das primeiras 2 horas' },
+      { type: 'p', text: 'As duas primeiras horas do dia definem o tom de todo o resto. Proteja esse tempo como se fosse ouro. Sem e-mail, sem redes sociais, sem reuniões. Apenas trabalho profundo.' },
+      { type: 'h2', text: '2. Blocos de foco de 90 minutos' },
+      { type: 'p', text: 'Nosso cérebro opera em ciclos ultradianos de aproximadamente 90 minutos. Respeite esse ritmo: 90 minutos de foco intenso, seguidos de 20 minutos de descanso real.' },
+      { type: 'blockquote', text: 'Foco não é um recurso infinito. É um músculo que precisa ser treinado e recuperado.' },
+      { type: 'h2', text: '3. A regra do "não" estratégico' },
+      { type: 'p', text: 'Pessoas de alta performance dizem "não" para 90% das coisas. Cada "sim" é um "não" para outra oportunidade. Seja implacável com seu tempo.' },
+      { type: 'h2', text: '4. Revisão semanal de 30 minutos' },
+      { type: 'ul', items: [
+        'O que funcionou esta semana?',
+        'O que não funcionou?',
+        'O que aprendi?',
+        'Quais são as 3 prioridades da próxima semana?'
+      ]},
+      { type: 'h2', text: '5. Movimento antes do mental' },
+      { type: 'p', text: 'Exercício físico não é opcional para quem quer performance cognitiva sustentada. 30 minutos de movimento pela manhã melhoram foco, memória e criatividade pelo resto do dia.' },
+      { type: 'p', text: 'Comece com um hábito. Domine-o. Adicione o próximo. Em 6 meses, você será outra pessoa.' }
+    ],
+    tags: ['produtividade', 'hábitos', 'foco', 'rotina'],
+    status: 'published', views: 2100, date: '2026-10-20', img: 'alt2', readTime: 7,
+    author: { name: 'Juliana Alves', bio: 'Coach de performance e autora best-seller.' }
+  },
+  {
+    id: 4, title: 'A nova economia dos criadores', cat: 'business',
+    excerpt: 'Por que creators estão se tornando a força econômica mais relevante da década.',
+    content: [
+      { type: 'p', text: 'Em 2026, a economia dos criadores movimenta mais de US$ 500 bilhões globalmente. Não é mais nicho — é a nova classe média digital.' },
+      { type: 'h2', text: 'De hobby a império' },
+      { type: 'p', text: 'O que começou como vlogs no YouTube e posts no Instagram se transformou em um ecossistema completo: newsletters pagas, cursos, comunidades, produtos digitais, licenciamento.' },
+      { type: 'h2', text: 'Os 3 pilares do creator moderno' },
+      { type: 'ul', items: [
+        '<b>Audiência própria:</b> não dependa de algoritmos. Tenha e-mail, comunidade, site.',
+        '<b>Produto próprio:</b> venda algo seu, não apenas a atenção de outros.',
+        '<b>Distribuição diversificada:</b> esteja em 3+ plataformas para mitigar riscos.'
+      ]},
+      { type: 'blockquote', text: 'Criadores não são influenciadores. São pequenas mídias com produtos próprios.' },
+      { type: 'h2', text: 'O futuro é vertical' },
+      { type: 'p', text: 'Os criadores de maior sucesso não tentam agradar todo mundo. Eles dominam um nicho específico e se tornam a referência absoluta nele. Melhor 10.000 fãs pagantes do que 1 milhão de seguidores passivos.' },
+      { type: 'p', text: 'Se você tem conhecimento valioso e disposição para compartilhar, nunca houve momento melhor para começar.' }
+    ],
+    tags: ['criadores', 'economia', 'negócios', 'marketing'],
+    status: 'published', views: 670, date: '2026-10-18', img: 'alt3', readTime: 5,
+    author: { name: 'Pedro Lima', bio: 'Investidor anjo e consultor de negócios digitais.' }
+  },
+  {
+    id: 5, title: 'Modelos de linguagem em 2026', cat: 'ai',
+    excerpt: 'Um panorama do que mudou — e do que ainda está por vir — nos LLMs.',
+    content: [
+      { type: 'p', text: 'Dois anos depois do boom dos LLMs, o cenário amadureceu. Modelos menores, mais eficientes e especializados dominam aplicações práticas.' },
+      { type: 'h2', text: 'A era dos modelos especializados' },
+      { type: 'p', text: 'Em vez de um modelo gigante para tudo, empresas estão treinando modelos menores para tarefas específicas: código, jurídico, médico, tradução. O resultado? Melhor performance, menor custo, mais privacidade.' },
+      { type: 'h2', text: 'Raciocínio estruturado' },
+      { type: 'p', text: 'Os modelos de 2026 não apenas "predizem a próxima palavra" — eles raciocinam em etapas, verificam suas próprias respostas e admitem incerteza. A alucinação caiu drasticamente.' },
+      { type: 'blockquote', text: 'A IA não ficou mais "esperta". Ficou mais metódica. E isso muda tudo.' },
+      { type: 'h2', text: 'O que vem por aí' },
+      { type: 'ul', items: [
+        'Modelos multimodais nativos (texto, imagem, áudio, vídeo)',
+        'Memória persistente de longo prazo',
+        'Agentes autônomos que executam tarefas complexas',
+        'Personalização profunda por usuário'
+      ]},
+      { type: 'p', text: 'Estamos apenas no começo. A próxima onda será de IA que age, não apenas responde.' }
+    ],
+    tags: ['IA', 'LLM', 'tecnologia', 'futuro'],
+    status: 'draft', views: 0, date: '2026-10-27', img: '', readTime: 9,
+    author: { name: 'Ana Ribeiro', bio: 'Pesquisadora em IA aplicada e escritora.' }
+  },
+  {
+    id: 6, title: 'Minimalismo digital na prática', cat: 'culture',
+    excerpt: 'Reduzir ruído, aumentar significado: um guia para viver com menos telas.',
+    content: [
+      { type: 'p', text: 'Vivemos cercados de notificações, feeds infinitos e estímulos constantes. O minimalismo digital não é sobre largar a tecnologia — é sobre usá-la com intenção.' },
+      { type: 'h2', text: 'A regra das 72 horas' },
+      { type: 'p', text: 'Antes de instalar qualquer novo app, espere 72 horas. Na maioria das vezes, você vai perceber que não precisava dele. A urgência era artificial.' },
+      { type: 'h2', text: 'Auditoria mensal de apps' },
+      { type: 'ul', items: [
+        'Quais apps usei nos últimos 30 dias?',
+        'Quais me trouxeram valor real?',
+        'Quais posso remover sem perda?',
+        'Quais notificações posso desativar?'
+      ]},
+      { type: 'blockquote', text: 'Toda ferramenta digital tem um custo oculto: sua atenção. Gaste-a com sabedoria.' },
+      { type: 'h2', text: 'O poder do tédio' },
+      { type: 'p', text: 'Cientificamente comprovado: momentos de "nada" são quando as melhores ideias surgem. Preencher cada segundo com conteúdo é roubar criatividade de si mesmo.' },
+      { type: 'h2', text: 'Rituais de desconexão' },
+      { type: 'p', text: 'Defina horários sem telas: primeira hora da manhã, refeições, última hora antes de dormir. Seu cérebro vai agradecer — e sua vida também.' },
+      { type: 'p', text: 'Minimalismo digital não é privação. É escolha consciente do que merece sua atenção.' }
+    ],
+    tags: ['minimalismo', 'digital', 'bem-estar', 'foco'],
+    status: 'published', views: 540, date: '2026-10-15', img: 'alt1', readTime: 5,
+    author: { name: 'Lucas Ferreira', bio: 'Escritor sobre cultura digital e bem-estar.' }
+  },
+];
+
+/* ========= STATE ========= */
+let state = {
+  user: JSON.parse(localStorage.getItem('nexus_user') || 'null'),
+  posts: JSON.parse(localStorage.getItem('nexus_posts') || 'null') || DEFAULT_POSTS,
+  theme: localStorage.getItem('nexus_theme') || 'dark',
+  editingPostId: null,
+  currentPostId: null,
+};
+function save() {
+  localStorage.setItem('nexus_posts', JSON.stringify(state.posts));
+  localStorage.setItem('nexus_user', JSON.stringify(state.user));
+  localStorage.setItem('nexus_theme', state.theme);
+}
+
+/* ========= ROUTER ========= */
+function navigate(route, params) {
+  const protected = ['dash-home','dash-registros','dash-visitantes','dash-settings'];
+  if (protected.includes(route) && !state.user) {
+    toast('Faça login para acessar o dashboard', true);
+    route = 'login';
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + route);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.route === route));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (route.startsWith('dash-')) renderDashboard();
+  if (route === 'blog') renderBlog();
+  if (route === 'home') renderHome();
+  if (route === 'categorias') renderCategories();
+  if (route === 'post' && params?.id) renderPost(params.id);
+  const hash = route === 'post' && params?.id ? `post-${params.id}` : route;
+  history.replaceState(null, '', '#' + hash);
+}
+
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', e => { e.preventDefault(); navigate(a.dataset.route); });
+});
+
+/* ========= THEME ========= */
+function applyTheme() {
+  document.body.dataset.theme = state.theme;
+  updateSwitches();
+}
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(); save();
+}
+function updateSwitches() {
+  const sw = document.getElementById('swTheme');
+  if (sw) sw.classList.toggle('on', state.theme === 'dark');
+}
+
+/* ========= AUTH ========= */
+function updateAuthUI() {
+  const auth = document.getElementById('authButtons');
+  const user = document.getElementById('userMenu');
+  if (state.user) {
+    auth.style.display = 'none';
+    user.style.display = 'flex';
+    document.getElementById('userName').textContent = state.user.name;
+    document.getElementById('setEmail').textContent = state.user.email;
+  } else {
+    auth.style.display = 'flex';
+    user.style.display = 'none';
+  }
+}
+function doLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  state.user = { name: email.split('@')[0], email };
+  save(); updateAuthUI();
+  toast('Bem-vindo de volta!');
+  navigate('dash-home');
+}
+function doRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  state.user = { name, email };
+  save(); updateAuthUI();
+  toast('Conta criada com sucesso!');
+  navigate('dash-home');
+}
+function logout() {
+  state.user = null;
+  save(); updateAuthUI();
+  toast('Você saiu da conta');
+  navigate('home');
+}
+
+/* ========= RENDER HOME ========= */
+function renderHome() {
+  const feat = document.getElementById('featuredPosts');
+  feat.innerHTML = state.posts.filter(p => p.status === 'published').slice(0, 3).map(postCard).join('');
+  const fc = document.getElementById('featuredCats');
+  fc.innerHTML = CATEGORIES.slice(0, 3).map(catCard).join('');
+}
+function postCard(p) {
+  const cat = CATEGORIES.find(c => c.id === p.cat);
+  return `
+    <article class="card" onclick="viewPost(${p.id})">
+      <div class="card-img ${p.img}">${cat ? cat.icon : '📝'}</div>
+      <div class="card-body">
+        <span class="card-tag">${cat ? cat.name : 'Geral'}</span>
+        <h3>${p.title}</h3>
+        <p>${p.excerpt}</p>
+        <div class="card-meta">
+          <span>${formatDate(p.date)}</span>
+          <span>${p.readTime || 5} min · ${p.views} views</span>
+        </div>
+      </div>
+    </article>`;
+}
+function catCard(c) {
+  return `
+    <div class="cat-card" onclick="filterByCat('${c.id}')">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-info">
+        <h4>${c.name}</h4>
+        <span>${c.count} artigos</span>
+      </div>
+    </div>`;
+}
+
+/* ========= RENDER CATEGORIES ========= */
+function renderCategories() {
+  document.getElementById('allCats').innerHTML = CATEGORIES.map(catCard).join('');
+}
+function filterByCat(id) {
+  navigate('blog');
+  document.getElementById('filterCat').value = id;
+  renderBlog();
+}
+
+/* ========= RENDER BLOG ========= */
+function renderBlog() {
+  const sel = document.getElementById('filterCat');
+  if (sel.options.length <= 1) {
+    CATEGORIES.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.id; o.textContent = c.name;
+      sel.appendChild(o);
+    });
+  }
+  const filter = sel.value;
+  const list = state.posts.filter(p => p.status === 'published' && (!filter || p.cat === filter));
+  document.getElementById('allPosts').innerHTML = list.length
+    ? list.map(postCard).join('')
+    : '<p style="color:var(--text-dim)">Nenhum post encontrado nesta categoria.</p>';
+}
+document.getElementById('filterCat').addEventListener('change', renderBlog);
+
+/* ========= VIEW POST ========= */
+function viewPost(id) {
+  navigate('post', { id });
+}
+
+function renderPost(id) {
+  const post = state.posts.find(p => p.id === id);
+  const wrap = document.getElementById('postContent');
+  if (!post) {
+    wrap.innerHTML = `<p style="text-align:center; padding:60px 0; color:var(--text-dim);">Post não encontrado. <a onclick="navigate('blog')" style="color:var(--primary-2); cursor:pointer;">Voltar ao blog</a></p>`;
+    return;
+  }
+  state.currentPostId = id;
+  post.views = (post.views || 0) + 1;
+  save();
+
+  const cat = CATEGORIES.find(c => c.id === post.cat);
+  const author = post.author || { name: state.user?.name || 'Autor Nexus', bio: 'Colaborador do blog.' };
+  const initials = author.name.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+
+  const contentHtml = (post.content || []).map(block => {
+    if (block.type === 'p') return `<p>${block.text}</p>`;
+    if (block.type === 'h2') return `<h2>${block.text}</h2>`;
+    if (block.type === 'h3') return `<h3>${block.text}</h3>`;
+    if (block.type === 'blockquote') return `<blockquote>${block.text}</blockquote>`;
+    if (block.type === 'ul') return `<ul>${block.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+    if (block.type === 'ol') return `<ol>${block.items.map(i => `<li>${i}</li>`).join('')}</ol>`;
+    return '';
+  }).join('');
+
+  const published = state.posts.filter(p => p.status === 'published');
+  const idx = published.findIndex(p => p.id === id);
+  const prev = idx > 0 ? published[idx - 1] : null;
+  const next = idx < published.length - 1 ? published[idx + 1] : null;
+
+  const sameCat = state.posts.filter(p => p.status === 'published' && p.cat === post.cat && p.id !== id);
+  const others = state.posts.filter(p => p.status === 'published' && p.cat !== post.cat && p.id !== id)
+    .sort((a,b) => b.views - a.views);
+  const suggestions = [...sameCat, ...others].slice(0, 3);
+
+  wrap.innerHTML = `
+    <a class="post-back" onclick="navigate('blog')">← Voltar ao blog</a>
+
+    <div class="post-header">
+      <span class="card-tag">${cat ? cat.icon + ' ' + cat.name : 'Artigo'}</span>
+      <h1>${post.title}</h1>
+      <div class="post-meta">
+        <div class="post-author">
+          <div class="avatar">${initials}</div>
+          <div>
+            <div style="color:var(--text); font-weight:600;">${author.name}</div>
+            <div style="font-size:.82rem;">${formatDate(post.date)} · ${post.readTime || 5} min de leitura</div>
+          </div>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:8px;">
+          <button class="icon-btn" onclick="toast('Link copiado!')" title="Compartilhar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button class="icon-btn" onclick="toast('Post salvo nos favoritos!')" title="Salvar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-cover ${post.img}">${cat ? cat.icon : '📝'}</div>
+
+    <article class="post-content">
+      ${contentHtml}
+    </article>
+
+    ${post.tags ? `
+    <div class="post-tags">
+      ${post.tags.map(t => `<span onclick="filterByTag('${t}')">#${t}</span>`).join('')}
+    </div>` : ''}
+
+    <div class="author-box">
+      <div class="avatar">${initials}</div>
+      <div>
+        <h4>${author.name}</h4>
+        <p>${author.bio}</p>
+      </div>
+    </div>
+
+    <div class="post-nav">
+      ${prev ? `
+        <div class="post-nav-item prev" onclick="viewPost(${prev.id})">
+          <small>← Anterior</small>
+          <div>${prev.title}</div>
+        </div>` : '<div></div>'}
+      ${next ? `
+        <div class="post-nav-item next" onclick="viewPost(${next.id})">
+          <small>Próximo →</small>
+          <div>${next.title}</div>
+        </div>` : '<div></div>'}
+    </div>
+
+    ${suggestions.length ? `
+    <div class="suggestions">
+      <h2>Continue lendo</h2>
+      <div class="grid grid-3">
+        ${suggestions.map(postCard).join('')}
+      </div>
+    </div>` : ''}
+  `;
+}
+
+function filterByTag(tag) {
+  navigate('blog');
+  const matches = state.posts.filter(p => p.status === 'published' && p.tags && p.tags.includes(tag));
+  document.getElementById('allPosts').innerHTML = matches.length
+    ? `<div style="grid-column: 1/-1; margin-bottom:10px; color:var(--text-dim);">Mostrando posts com a tag <b style="color:var(--primary-2);">#${tag}</b></div>` + matches.map(postCard).join('')
+    : '<p style="color:var(--text-dim)">Nenhum post encontrado com esta tag.</p>';
+}
+
+/* ========= DASHBOARD ========= */
+const SIDEBAR_HTML = `
+  <h5>Menu</h5>
+  <a href="#" data-route="dash-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg> Visão geral</a>
+  <a href="#" data-route="dash-registros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg> Registros</a>
+  <a href="#" data-route="dash-visitantes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Visitantes</a>
+  <a href="#" data-route="dash-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configurações</a>
+  <h5 style="margin-top:18px;">Voltar</h5>
+  <a href="#" data-route="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg> Ver blog</a>
+`;
+function renderDashboard() {
+  ['sidebar1','sidebar2','sidebar3','sidebar4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerHTML = SIDEBAR_HTML;
+      const current = location.hash.replace('#','') || 'dash-home';
+      el.querySelectorAll('a').forEach(a => {
+        a.classList.toggle('active', a.dataset.route === current);
+        a.addEventListener('click', e => { e.preventDefault(); navigate(a.dataset.route); });
+      });
+    }
+  });
+  renderDashHome();
+  renderDashPosts();
+  renderDashVisitors();
+}
+
+function renderDashHome() {
+  const pub = state.posts.filter(p => p.status === 'published').length;
+  const totalViews = state.posts.reduce((s,p) => s + (p.views || 0), 0);
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat"><div class="stat-label">📝 Posts publicados</div><div class="stat-value">${pub}</div><div class="stat-delta">+12% este mês</div></div>
+    <div class="stat"><div class="stat-label">👁️ Total de views</div><div class="stat-value">${totalViews.toLocaleString('pt-BR')}</div><div class="stat-delta">+8% esta semana</div></div>
+    <div class="stat"><div class="stat-label">💬 Comentários</div><div class="stat-value">342</div><div class="stat-delta">+24 hoje</div></div>
+    <div class="stat"><div class="stat-label">⭐ Assinantes</div><div class="stat-value">1.28k</div><div class="stat-delta">+5% este mês</div></div>
+  `;
+  drawChart('chartVisitors', [320, 480, 410, 620, 580, 720, 890]);
+  const recent = document.getElementById('recentPosts');
+  recent.innerHTML = state.posts.slice(0, 4).map(p => `
+    <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer;" onclick="viewPost(${p.id})">
+      <div>
+        <div style="font-weight:600;">${p.title}</div>
+        <div style="font-size:.82rem; color:var(--text-dim);">${formatDate(p.date)}</div>
+      </div>
+      <span class="badge ${p.status === 'published' ? 'badge-pub' : 'badge-draft'}">${p.status === 'published' ? 'Publicado' : 'Rascunho'}</span>
+    </div>`).join('');
+}
+
+function renderDashPosts() {
+  const tb = document.getElementById('postsTable');
+  tb.innerHTML = state.posts.map(p => {
+    const cat = CATEGORIES.find(c => c.id === p.cat);
+    return `<tr>
+      <td><b style="cursor:pointer;" onclick="viewPost(${p.id})">${p.title}</b></td>
+      <td>${cat ? cat.name : '-'}</td>
+      <td><span class="badge ${p.status === 'published' ? 'badge-pub' : 'badge-draft'}">${p.status === 'published' ? 'Publicado' : 'Rascunho'}</span></td>
+      <td>${p.views}</td>
+      <td><div class="row-actions">
+        <button onclick="editPost(${p.id})">Editar</button>
+        <button onclick="deletePost(${p.id})">Excluir</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDashVisitors() {
+  document.getElementById('visitStats').innerHTML = `
+    <div class="stat"><div class="stat-label">👥 Visitantes únicos</div><div class="stat-value">4.820</div><div class="stat-delta">+18% vs. semana anterior</div></div>
+    <div class="stat"><div class="stat-label">📄 Pageviews</div><div class="stat-value">12.4k</div><div class="stat-delta">+9%</div></div>
+    <div class="stat"><div class="stat-label">⏱️ Tempo médio</div><div class="stat-value">3:42</div><div class="stat-delta">+12s</div></div>
+    <div class="stat"><div class="stat-label">↩️ Taxa de rejeição</div><div class="stat-value">28%</div><div class="stat-delta down">+2%</div></div>
+  `;
+  drawChart('chartSources', [420, 380, 510, 290, 620, 480, 550]);
+  const sources = [
+    ['Google', '🇧🇷 Brasil', '/blog/ia', '2:14'],
+    ['Twitter/X', '🇺🇸 EUA', '/home', '4:02'],
+    ['LinkedIn', '🇵🇹 Portugal', '/design', '1:48'],
+    ['Direto', '🇧🇷 Brasil', '/produtividade', '5:30'],
+    ['Reddit', '🇩🇪 Alemanha', '/tech', '3:15'],
+  ];
+  document.getElementById('visitorsTable').innerHTML = sources.map(s =>
+    `<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td></tr>`
+  ).join('');
+}
+
+/* ========= CHART ========= */
+function drawChart(id, data) {
+  const svg = document.getElementById(id);
+  if (!svg) return;
+  const w = 600, h = 220, pad = 30;
+  const max = Math.max(...data);
+  const step = (w - pad * 2) / (data.length - 1);
+  const pts = data.map((v, i) => [pad + i * step, h - pad - (v / max) * (h - pad * 2)]);
+  const path = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0] + ',' + p[1]).join(' ');
+  const area = path + ` L ${pts[pts.length-1][0]},${h-pad} L ${pts[0][0]},${h-pad} Z`;
+  const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="grad-${id}" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#ec4899" stop-opacity=".5"/>
+        <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${[0,1,2,3].map(i => `<line x1="${pad}" x2="${w-pad}" y1="${pad + i*(h-pad*2)/3}" y2="${pad + i*(h-pad*2)/3}" stroke="var(--border)" stroke-dasharray="3,3"/>`).join('')}
+    <path d="${area}" fill="url(#grad-${id})"/>
+    <path d="${path}" fill="none" stroke="#ec4899" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#ec4899"/>
+      <text x="${p[0]}" y="${h-8}" fill="var(--text-dim)" font-size="11" text-anchor="middle">${days[i] || ''}</text>`).join('')}
+  `;
+}
+
+/* ========= POSTS CRUD ========= */
+function openPostModal(id) {
+  state.editingPostId = id || null;
+  const sel = document.getElementById('postCat');
+  sel.innerHTML = CATEGORIES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if (id) {
+    const p = state.posts.find(x => x.id === id);
+    document.getElementById('modalTitle').textContent = 'Editar post';
+    document.getElementById('postTitle').value = p.title;
+    document.getElementById('postCat').value = p.cat;
+    document.getElementById('postExcerpt').value = p.excerpt;
+    document.getElementById('postStatus').value = p.status;
+  } else {
+    document.getElementById('modalTitle').textContent = 'Novo post';
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postExcerpt').value = '';
+    document.getElementById('postStatus').value = 'draft';
+  }
+  document.getElementById('postModal').classList.add('show');
+}
+function closePostModal() { document.getElementById('postModal').classList.remove('show'); }
+function savePost() {
+  const title = document.getElementById('postTitle').value.trim();
+  if (!title) return toast('Informe um título', true);
+  const data = {
+    title,
+    cat: document.getElementById('postCat').value,
+    excerpt: document.getElementById('postExcerpt').value || 'Sem descrição.',
+    status: document.getElementById('postStatus').value,
+  };
+  if (state.editingPostId) {
+    const p = state.posts.find(x => x.id === state.editingPostId);
+    Object.assign(p, data);
+    toast('Post atualizado!');
+  } else {
+    state.posts.unshift({
+      id: Date.now(), ...data,
+      views: 0, date: new Date().toISOString().slice(0,10),
+      img: ['','alt1','alt2','alt3'][Math.floor(Math.random()*4)],
+      readTime: Math.floor(Math.random() * 8) + 3,
+      author: { name: state.user?.name || 'Autor', bio: 'Colaborador do blog.' },
+      tags: [],
+      content: [{ type: 'p', text: data.excerpt }]
+    });
+    toast('Post criado!');
+  }
+  save(); closePostModal(); renderDashboard();
+}
+function editPost(id) { openPostModal(id); }
+function deletePost(id) {
+  if (!confirm('Excluir este post?')) return;
+  state.posts = state.posts.filter(p => p.id !== id);
+  save(); renderDashboard();
+  toast('Post excluído');
+}
+
+/* ========= SETTINGS ========= */
+function saveSettings() { toast('Configurações salvas!'); }
+
+/* ========= UTILS ========= */
+function formatDate(d) {
+  const dt = new Date(d);
+  return dt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+let toastTimer;
+function toast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!err);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ========= INIT ========= */
+applyTheme();
+updateAuthUI();
+const initialHash = location.hash.replace('#','') || 'home';
+if (initialHash.startsWith('post-')) {
+  const id = parseInt(initialHash.replace('post-',''));
+  navigate('post', { id });
+} else {
+  navigate(initialHash);
+}
+</script>
+</body>
+</html>
